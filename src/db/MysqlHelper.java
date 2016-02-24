@@ -1,4 +1,4 @@
-package hemodialysis;
+package db;
 
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
@@ -8,12 +8,17 @@ import java.sql.*;
  * Created by 31344 on 2016/2/24.
  * 连接血透数据库，mysql
  */
-public class DBHelper {
+public class MysqlHelper {
 
     private Connection connection;
+    String url;
+    String user;
+    String password;
 
-    public DBHelper(){
-
+    public MysqlHelper(String url,String user,String password){
+        this.url = url;
+        this.user = user;
+        this.password = password;
     }
 
     /**
@@ -24,21 +29,8 @@ public class DBHelper {
             //动态加载mysql驱动
             Class.forName("com.mysql.jdbc.Driver");
 
-            String url="jdbc:mysql://127.0.0.1:3306/hemodialysis";
-            String user = "root";
-            String password = "123456";
-
             //建立连接
             connection = DriverManager.getConnection(url,user,password);
-
-//            Statement s = connection.createStatement();
-//            String sql = "select * from patient";
-//            ResultSet rs = s.executeQuery(sql);
-//
-//            while(rs.next()){
-//                System.out.println(rs.getString("patient_id") +" "+ rs.getString("patient_name") +" "+ rs.getString("patient_age"));
-//            }
-//            connection.close();
         } catch (ClassNotFoundException e) {
             System.out.println("加载mysql驱动失败！");
             e.printStackTrace();
@@ -88,7 +80,7 @@ public class DBHelper {
         try {
             connection.close();
         } catch (SQLException e) {
-            System.out.println("关闭数据库连接失败！");
+            System.out.println("关闭mysql数据库连接失败！");
             e.printStackTrace();
         }
     }
