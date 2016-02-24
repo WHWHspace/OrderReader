@@ -1,5 +1,7 @@
 package hemodialysis;
 
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+
 import java.sql.*;
 
 /**
@@ -8,7 +10,16 @@ import java.sql.*;
  */
 public class DBHelper {
 
-    public static Connection GetDBConnection(){
+    private Connection connection;
+
+    public DBHelper(){
+
+    }
+
+    /**
+     * 建立数据库连接
+     */
+    public void getConnection(){
         try {
             //动态加载mysql驱动
             Class.forName("com.mysql.jdbc.Driver");
@@ -18,8 +29,7 @@ public class DBHelper {
             String password = "123456";
 
             //建立连接
-            Connection connection = DriverManager.getConnection(url,user,password);
-            return connection;
+            connection = DriverManager.getConnection(url,user,password);
 
 //            Statement s = connection.createStatement();
 //            String sql = "select * from patient";
@@ -36,7 +46,51 @@ public class DBHelper {
             System.out.println("建立数据库连接失败！");
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 执行更新，插入语句
+     * @param sql
+     */
+    public void executeUpdate(String sql){
+        Statement s = null;
+        try {
+            s = connection.createStatement();
+            int result = s.executeUpdate(sql);
+        } catch (SQLException e) {
+            System.out.println("更新失败");
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 执行查询语句
+     * @param sql
+     */
+    public ResultSet executeQuery(String sql){
+        Statement s = null;
+        ResultSet rs = null;
+        try {
+            s = connection.createStatement();
+            rs = s.executeQuery(sql);
+            return rs;
+        } catch (SQLException e) {
+            System.out.println("更新失败");
+            e.printStackTrace();
+        }
         return null;
+    }
+
+    /**
+     * 关闭连接
+     */
+    public void closeConnection(){
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            System.out.println("关闭数据库连接失败！");
+            e.printStackTrace();
+        }
     }
 
 }
