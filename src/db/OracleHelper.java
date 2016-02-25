@@ -1,8 +1,6 @@
 package db;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 
 /**
  * Created by 31344 on 2016/2/24.
@@ -46,5 +44,19 @@ public class OracleHelper {
             System.out.println("关闭oracle数据库连接失败！");
             e.printStackTrace();
         }
+    }
+
+    public ResultSet executeQuery(String sql) {
+        Statement s = null;
+        ResultSet rs = null;
+        try {
+            s = connection.createStatement();
+            rs = s.executeQuery(sql);
+            return rs;
+        } catch (SQLException e) {
+            System.out.println("查询失败");
+            e.printStackTrace();
+        }
+        return  null;
     }
 }

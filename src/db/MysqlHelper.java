@@ -24,13 +24,13 @@ public class MysqlHelper {
     /**
      * 建立数据库连接
      */
-    public void getConnection(){
+    private void getConnection(){
         try {
             //动态加载mysql驱动
             Class.forName("com.mysql.jdbc.Driver");
 
             //建立连接
-            connection = DriverManager.getConnection(url,user,password);
+            connection = DriverManager.getConnection(url, user, password);
         } catch (ClassNotFoundException e) {
             System.out.println("加载mysql驱动失败！");
             e.printStackTrace();
@@ -67,7 +67,7 @@ public class MysqlHelper {
             rs = s.executeQuery(sql);
             return rs;
         } catch (SQLException e) {
-            System.out.println("更新失败");
+            System.out.println("查询失败");
             e.printStackTrace();
         }
         return null;
@@ -76,7 +76,7 @@ public class MysqlHelper {
     /**
      * 关闭连接
      */
-    public void closeConnection(){
+    private void closeConnection(){
         try {
             connection.close();
         } catch (SQLException e) {
