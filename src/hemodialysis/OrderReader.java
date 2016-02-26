@@ -6,6 +6,7 @@ import hisImpl.OrderImplOf117Hospital;
 import hisInterface.OrderInterface;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by 31344 on 2016/2/24.
@@ -25,7 +26,7 @@ public class OrderReader {
     }
 
     /**
-     * ¶ÁÈ¡ËùÓĞ³¤ÆÚÒ½Öö¡£»áÉ¾³ıÒÑÓĞµÄÒ½ÖöÊı¾İ
+     * è¯»å–æ‰€æœ‰é•¿æœŸåŒ»å˜±ã€‚ä¼šåˆ é™¤å·²æœ‰çš„åŒ»å˜±æ•°æ®
      */
     public void ReadAllLongTermOrder(){
         ArrayList<LongTermOrder> orders = hisImpl.getAllLongTermOrder();
@@ -38,12 +39,27 @@ public class OrderReader {
         mysqlHelper.closeConnection();
     }
 
+    /**
+     *è¯»å–æ–°å¢çš„åŒ»å˜±
+     */
+    public void ReadNewAddedLongTermOrder(Date date){
+        ArrayList<LongTermOrder> orders = hisImpl.getUpdatedLongTermOrder(date);
+        if(orders.size() > 0){
+            System.out.println("æ·»åŠ æ–°æ•°æ®");
+            mysqlHelper.getConnection();
+
+            insertLongTermOrder(orders);
+
+            mysqlHelper.closeConnection();
+        }
+    }
+
     public void ReadAllShortTermOrder(){
 
     }
 
     /**
-     * ²åÈë³¤ÆÚÒ½Öö
+     * æ’å…¥é•¿æœŸåŒ»å˜±
      * @param orders
      */
     private void insertLongTermOrder(ArrayList<LongTermOrder> orders) {
@@ -60,7 +76,7 @@ public class OrderReader {
     }
 
     /**
-     * Çå¿Õ³¤ÆÚÒ½ÖöÊı¾İ
+     * æ¸…ç©ºé•¿æœŸåŒ»å˜±æ•°æ®
      */
     private void clearLongTermOrder() {
         String sql = "delete from longterm_ordermgt where lgord_id > 0;";

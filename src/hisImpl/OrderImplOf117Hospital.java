@@ -43,6 +43,19 @@ public class OrderImplOf117Hospital implements OrderInterface{
         String sql = "SELECT * from \"longterm_order_117\"";
         ResultSet rs = helper.executeQuery(sql);
 
+        orders = readLongTermOrderData(rs);
+
+        helper.closeConnection();
+        return orders;
+    }
+
+    /**
+     * 解析longtermorder的resultSet
+     * @param rs
+     * @return
+     */
+    private ArrayList<LongTermOrder> readLongTermOrderData(ResultSet rs) {
+        ArrayList<LongTermOrder> orders = new ArrayList<LongTermOrder>();
         try {
             while(rs.next()){
                 LongTermOrder o = new LongTermOrder();
@@ -84,7 +97,6 @@ public class OrderImplOf117Hospital implements OrderInterface{
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        helper.closeConnection();
         return null;
     }
 
@@ -105,8 +117,17 @@ public class OrderImplOf117Hospital implements OrderInterface{
 
     @Override
     public ArrayList<LongTermOrder> getUpdatedLongTermOrder(Date date) {
+        helper.getConnection();
+        ArrayList<LongTermOrder> orders = new ArrayList<LongTermOrder>();
 
-        return null;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String sql = "SELECT * from \"longterm_order_117\" WHERE \"enter_date_time\" >= to_date('"+ dateFormat.format(date) +"','yyyy-mm-dd hh24:mi:ss')";
+
+        ResultSet rs = helper.executeQuery(sql);
+        orders = readLongTermOrderData(rs);
+
+        helper.closeConnection();
+        return orders;
     }
 
     @Override
