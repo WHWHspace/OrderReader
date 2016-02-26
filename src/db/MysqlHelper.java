@@ -24,7 +24,7 @@ public class MysqlHelper {
     /**
      * 建立数据库连接
      */
-    private void getConnection(){
+    public void getConnection(){
         try {
             //动态加载mysql驱动
             Class.forName("com.mysql.jdbc.Driver");
@@ -76,7 +76,7 @@ public class MysqlHelper {
     /**
      * 关闭连接
      */
-    private void closeConnection(){
+    public void closeConnection(){
         try {
             connection.close();
         } catch (SQLException e) {

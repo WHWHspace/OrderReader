@@ -1,3 +1,4 @@
+import hemodialysis.OrderReader;
 import hisImpl.OrderImplOf117Hospital;
 import hisInterface.OrderInterface;
 
@@ -9,6 +10,7 @@ public class Main {
     public static void main(String args[]){
 
         OrderInterface inter = new OrderImplOf117Hospital();
-        inter.getAllLongTermOrder();
+        OrderReader reader = new OrderReader(inter);
+        reader.ReadAllLongTermOrder();
     }
 }
