@@ -17,11 +17,7 @@ public class Main {
         OrderInterface inter = new OrderImplOf117Hospital();
         OrderReader reader = new OrderReader(inter);
 //        reader.ReadAllLongTermOrder();
-//        try {
-//            reader.ReadNewAddedLongTermOrder((new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")).parse("2011-1-2 12:12:12"));
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
+//        reader.ReadAllShortTermOrder();
         Thread thread = new Thread(new ReadOrderThread(new Date(),reader,10000));
         thread.start();
     }

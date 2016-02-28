@@ -25,6 +25,7 @@ public class ReadOrderThread implements Runnable{
             System.out.println(date);               //上一次读取数据的时间
             Date currentDate = new Date();          //现在的时间
             reader.ReadNewAddedLongTermOrder(date); //读取上一次到现在之间的数据
+            reader.ReadNewAddedShortTermOrder(date);
             date = currentDate;                     //跟新上一次读取的时间
             try {
                 Thread.sleep(interval);

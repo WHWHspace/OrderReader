@@ -40,7 +40,7 @@ public class OrderImplOf117Hospital implements OrderInterface{
         helper.getConnection();
         ArrayList<LongTermOrder> orders = new ArrayList<LongTermOrder>();
 
-        String sql = "SELECT * from \"longterm_order_117\"";
+        String sql = "SELECT * from \""+ LongTermOrderViewName +"\"";
         ResultSet rs = helper.executeQuery(sql);
 
         orders = readLongTermOrderData(rs);
@@ -100,6 +100,57 @@ public class OrderImplOf117Hospital implements OrderInterface{
         return null;
     }
 
+    /**
+     * 解析shorttermorder的resultSet
+     * @param rs
+     * @return
+     */
+    private ArrayList<ShortTermOrder> readShortTermOrderData(ResultSet rs) {
+        ArrayList<ShortTermOrder> orders = new ArrayList<ShortTermOrder>();
+        try {
+            while(rs.next()){
+                ShortTermOrder o = new ShortTermOrder();
+                o.setShord_patic(rs.getString("shord_patic"));
+                SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+                try {
+                    Date date = readFormat.parse(rs.getString("start_date_time"));
+                    o.setShord_dateord(dateFormat.format(date));
+                    o.setShord_timeord(timeFormat.format(date));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                o.setShord_usr1(rs.getString("shord_usr1"));
+                o.setShord_drug(rs.getString("shord_drug"));
+                //1，新开。2，执行。3，停止。4，作废。
+                if ("1".equals(rs.getString("order_status")) || "2".equals(rs.getString("order_status"))){
+                    o.setShord_actst("启用");
+                }
+                else{
+                    o.setShord_actst("停用");
+                }
+                try {
+                    o.setShord_dtactst(dateFormat.format(readFormat.parse(rs.getString("stop_date_time"))));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                o.setShord_usr2(rs.getString("nurse"));
+                o.setShord_comment(rs.getString("shord_comment"));
+                o.setShord_intake(rs.getString("dosage") + rs.getString("dosage_unit"));
+                o.setShord_freq(rs.getString("shord_freq"));
+                o.setShord_medway(rs.getString("shord_medway"));
+
+                orders.add(o);
+            }
+
+            return orders;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     @Override
     public ArrayList<LongTermOrder> getAllLongTermOrder(String id) {
         return null;
@@ -107,7 +158,16 @@ public class OrderImplOf117Hospital implements OrderInterface{
 
     @Override
     public ArrayList<ShortTermOrder> getAllShortTermOrder() {
-        return null;
+        helper.getConnection();
+        ArrayList<ShortTermOrder> orders = new ArrayList<ShortTermOrder>();
+
+        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\"";
+        ResultSet rs = helper.executeQuery(sql);
+
+        orders = readShortTermOrderData(rs);
+
+        helper.closeConnection();
+        return orders;
     }
 
     @Override
@@ -120,8 +180,8 @@ public class OrderImplOf117Hospital implements OrderInterface{
         helper.getConnection();
         ArrayList<LongTermOrder> orders = new ArrayList<LongTermOrder>();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        String sql = "SELECT * from \"longterm_order_117\" WHERE \"enter_date_time\" >= to_date('"+ dateFormat.format(date) +"','yyyy-mm-dd hh24:mi:ss')";
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String sql = "SELECT * from \""+ LongTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(date) +"', 'yyyy-mm-dd hh24:mi:ss')";
 
         ResultSet rs = helper.executeQuery(sql);
         orders = readLongTermOrderData(rs);
@@ -132,6 +192,16 @@ public class OrderImplOf117Hospital implements OrderInterface{
 
     @Override
     public ArrayList<ShortTermOrder> getUpdatedShortTermOrder(Date date) {
-        return null;
+        helper.getConnection();
+        ArrayList<ShortTermOrder> orders = new ArrayList<ShortTermOrder>();
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(date) +"', 'yyyy-mm-dd hh24:mi:ss')";
+
+        ResultSet rs = helper.executeQuery(sql);
+        orders = readShortTermOrderData(rs);
+
+        helper.closeConnection();
+        return orders;
     }
 }
