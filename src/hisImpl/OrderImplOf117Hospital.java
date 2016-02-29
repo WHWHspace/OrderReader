@@ -1,7 +1,7 @@
 package hisImpl;
 
-import Model.LongTermOrder;
-import Model.ShortTermOrder;
+import model.LongTermOrder;
+import model.ShortTermOrder;
 import db.OracleHelper;
 import hisInterface.OrderInterface;
 
@@ -64,7 +64,13 @@ public class OrderImplOf117Hospital implements OrderInterface{
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                 SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
                 try {
-                    Date date = readFormat.parse(rs.getString("start_date_time"));
+                    Date date;
+                    if(rs.getString("start_date_time") != null){
+                        date = readFormat.parse(rs.getString("start_date_time"));
+                    }
+                    else {
+                        date = new Date();
+                    }
                     o.setLgord_dateord(dateFormat.format(date));
                     o.setLgord_timeord(timeFormat.format(date));
                 } catch (ParseException e) {
@@ -80,7 +86,12 @@ public class OrderImplOf117Hospital implements OrderInterface{
                     o.setLgord_actst("停用");
                 }
                 try {
-                    o.setLgord_dtactst(dateFormat.format(readFormat.parse(rs.getString("stop_date_time"))));
+                    if (rs.getString("stop_date_time") != null){
+                        o.setLgord_dtactst(dateFormat.format(readFormat.parse(rs.getString("stop_date_time"))));
+                    }
+                    else {
+                        o.setLgord_dtactst(dateFormat.format(new Date()));
+                    }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -115,9 +126,13 @@ public class OrderImplOf117Hospital implements OrderInterface{
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                 SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
                 try {
-                    Date date = readFormat.parse(rs.getString("start_date_time"));
-                    o.setShord_dateord(dateFormat.format(date));
-                    o.setShord_timeord(timeFormat.format(date));
+                    Date date;
+                    if(rs.getString("start_date_time") != null){
+                        date = readFormat.parse(rs.getString("start_date_time"));
+                    }
+                    else {
+                        date = new Date();
+                    }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -131,7 +146,12 @@ public class OrderImplOf117Hospital implements OrderInterface{
                     o.setShord_actst("停用");
                 }
                 try {
-                    o.setShord_dtactst(dateFormat.format(readFormat.parse(rs.getString("stop_date_time"))));
+                    if (rs.getString("stop_date_time") != null){
+                        o.setShord_dtactst(dateFormat.format(readFormat.parse(rs.getString("stop_date_time"))));
+                    }
+                    else {
+                        o.setShord_dtactst(dateFormat.format(new Date()));
+                    }
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

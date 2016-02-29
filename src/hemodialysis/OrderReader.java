@@ -1,10 +1,10 @@
 package hemodialysis;
 
-import Model.LongTermOrder;
-import Model.ShortTermOrder;
+import model.LongTermOrder;
+import model.ShortTermOrder;
 import db.MysqlHelper;
-import hisImpl.OrderImplOf117Hospital;
 import hisInterface.OrderInterface;
+import ui.MainWindow;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,7 +60,8 @@ public class OrderReader {
     public void ReadNewAddedLongTermOrder(Date date){
         ArrayList<LongTermOrder> orders = hisImpl.getUpdatedLongTermOrder(date);
         if(orders.size() > 0){
-            System.out.println("添加" + orders.size() +"条新数据");
+//            System.out.println("添加" + orders.size() +"条新数据");
+            MainWindow.showMessage("添加" + orders.size() +"条新数据");
             mysqlHelper.getConnection();
 
             insertLongTermOrder(orders);
@@ -75,7 +76,8 @@ public class OrderReader {
     public void ReadNewAddedShortTermOrder(Date date){
         ArrayList<ShortTermOrder> orders = hisImpl.getUpdatedShortTermOrder(date);
         if(orders.size() > 0){
-            System.out.println("添加" + orders.size() +"条新数据");
+//            System.out.println("添加" + orders.size() +"条新数据");
+            MainWindow.showMessage("添加" + orders.size() + "条新数据");
             mysqlHelper.getConnection();
 
             insertShortTermOrder(orders);

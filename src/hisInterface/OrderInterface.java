@@ -1,7 +1,7 @@
 package hisInterface;
 
-import Model.LongTermOrder;
-import Model.ShortTermOrder;
+import model.LongTermOrder;
+import model.ShortTermOrder;
 
 import java.util.ArrayList;
 import java.util.Date;
