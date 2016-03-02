@@ -1,10 +1,11 @@
 package hemodialysis;
 
+import launcher.Main;
 import model.LongTermOrder;
 import model.ShortTermOrder;
 import db.MysqlHelper;
 import hisInterface.OrderInterface;
-import ui.MainWindow;
+import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Date;
  */
 public class OrderReader {
 
+    private Logger logger = Main.logger;
     MysqlHelper mysqlHelper;
     OrderInterface hisImpl;
 
@@ -26,33 +28,39 @@ public class OrderReader {
         hisImpl = inter;
     }
 
-    /**
-     * 读取所有长期医嘱。会删除已有的医嘱数据
-     */
-    public void ReadAllLongTermOrder(){
-        ArrayList<LongTermOrder> orders = hisImpl.getAllLongTermOrder();
+//    /**
+//     * 读取所有长期医嘱。会删除已有的医嘱数据
+//     */
+//    public void ReadAllLongTermOrder(){
+//        ArrayList<LongTermOrder> orders = hisImpl.getAllLongTermOrder();
+//        if (orders.size() > 0){
+//            logger.info(new Date() + " 添加" + orders.size() +"条长期医嘱数据");
+//            mysqlHelper.getConnection();
+//
+//            clearLongTermOrder();
+//            insertLongTermOrder(orders);
+//
+//            mysqlHelper.closeConnection();
+//        }
+//    }
 
-        mysqlHelper.getConnection();
-
-        clearLongTermOrder();
-        insertLongTermOrder(orders);
-
-        mysqlHelper.closeConnection();
-    }
-
-    /**
-     * 读取所有短期医嘱。会删除已有的医嘱数据
-     */
-    public void ReadAllShortTermOrder(){
-        ArrayList<ShortTermOrder> orders = hisImpl.getAllShortTermOrder();
-
-        mysqlHelper.getConnection();
-
-        clearShortTermOrder();
-        insertShortTermOrder(orders);
-
-        mysqlHelper.closeConnection();
-    }
+//    /**
+//     * 读取所有短期医嘱。会删除已有的医嘱数据
+//     */
+//    public void ReadAllShortTermOrder(){
+//
+//        ArrayList<ShortTermOrder> orders = hisImpl.getAllShortTermOrder();
+//
+//        if (orders.size() > 0){
+//            logger.info(new Date() + " 添加" + orders.size() +"条短期医嘱数据");
+//            mysqlHelper.getConnection();
+//
+//            clearShortTermOrder();
+//            insertShortTermOrder(orders);
+//
+//            mysqlHelper.closeConnection();
+//        }
+//    }
 
     /**
      *读取新增的长期医嘱
@@ -60,8 +68,7 @@ public class OrderReader {
     public void ReadNewAddedLongTermOrder(Date date){
         ArrayList<LongTermOrder> orders = hisImpl.getUpdatedLongTermOrder(date);
         if(orders.size() > 0){
-//            System.out.println("添加" + orders.size() +"条新数据");
-            MainWindow.showMessage("添加" + orders.size() +"条新数据");
+            logger.info(new Date() + " 添加" + orders.size() +"条长期医嘱数据");
             mysqlHelper.getConnection();
 
             insertLongTermOrder(orders);
@@ -76,8 +83,7 @@ public class OrderReader {
     public void ReadNewAddedShortTermOrder(Date date){
         ArrayList<ShortTermOrder> orders = hisImpl.getUpdatedShortTermOrder(date);
         if(orders.size() > 0){
-//            System.out.println("添加" + orders.size() +"条新数据");
-            MainWindow.showMessage("添加" + orders.size() + "条新数据");
+            logger.info(new Date() + " 添加" + orders.size() +"条短期医嘱数据");
             mysqlHelper.getConnection();
 
             insertShortTermOrder(orders);
@@ -121,20 +127,19 @@ public class OrderReader {
         }
     }
 
-    /**
-     * 清空长期医嘱数据
-     */
-    private void clearLongTermOrder() {
-        String sql = "delete from longterm_ordermgt where lgord_id > 0;";
-        mysqlHelper.executeUpdate(sql);
-    }
-
-    /**
-     * 清空短期医嘱数据
-     */
-    private void clearShortTermOrder() {
-        String sql = "delete from shortterm_ordermgt where shord_id > 0;";
-        mysqlHelper.executeUpdate(sql);
-    }
-
+//    /**
+//     * 清空长期医嘱数据
+//     */
+//    private void clearLongTermOrder() {
+//        String sql = "delete from longterm_ordermgt where lgord_id > 0;";
+//        mysqlHelper.executeUpdate(sql);
+//    }
+//
+//    /**
+//     * 清空短期医嘱数据
+//     */
+//    private void clearShortTermOrder() {
+//        String sql = "delete from shortterm_ordermgt where shord_id > 0;";
+//        mysqlHelper.executeUpdate(sql);
+//    }
 }

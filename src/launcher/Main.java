@@ -4,10 +4,9 @@ import hemodialysis.OrderReader;
 import hemodialysis.ReadOrderThread;
 import hisImpl.OrderImplOf117Hospital;
 import hisInterface.OrderInterface;
-import ui.MainWindow;
+import org.apache.log4j.Logger;
 
 import java.io.*;
-import java.nio.Buffer;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,7 +16,8 @@ import java.util.Date;
  */
 public class Main {
 
-    public static final int INTERVAL = 10000;
+    public static Logger logger = Logger.getLogger(Main.class);
+    public static int INTERVAL = 10000;
 
     static Date lastReadTime;
     static OrderInterface inter = new OrderImplOf117Hospital();
@@ -25,17 +25,47 @@ public class Main {
     static ReadOrderThread thread;
 
     public static void main(String args[]){
-        readLastReadTime();
 
-        MainWindow w = new MainWindow();
+        readLastReadTime();
+        readInterval();
+
+        logger.info(new Date() + " 开启线程任务");
         thread = new ReadOrderThread(lastReadTime,reader,INTERVAL);
         thread.start();
     }
 
+    /**
+     * 读取时间间隔
+     */
+    private static void readInterval() {
+        try {
+            String path = System.getProperty("user.dir");
+            BufferedReader r = new BufferedReader(new FileReader(new File(path + "/config/interval.txt")));
+            String s = r.readLine();
+            if (s != null){
+                INTERVAL = Integer.parseInt(s);
+            }
+            else{
+                lastReadTime = new Date();
+            }
+            logger.info(new Date() + " 读取时间间隔完成");
+            r.close();
+        } catch (FileNotFoundException e) {
+            logger.error(new Date() + " 未找到配置文件，请在config目录下添加interval.txt,设置读取时间间隔（以毫秒为单位）\n" + e.getStackTrace());
+
+        } catch (IOException e) {
+            logger.error(new Date() + " 读取时间间隔配置文件失败！\n" + e.getStackTrace());
+        }
+    }
+
+    /**
+     * 读取上一次读取数据的时间
+     * 如果设置上一次时间为很早以前，就是读取所有的数据，建议第一次运行的时候设置
+     */
     private static void readLastReadTime() {
         try {
             String path = System.getProperty("user.dir");
-            BufferedReader r = new BufferedReader(new FileReader(new File(path + "/timerecord/lastReadTime.txt")));
+            BufferedReader r = new BufferedReader(new FileReader(new File(path + "/config/lastReadTime.txt")));
             String s = r.readLine();
             if (s != null){
                 lastReadTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(s);
@@ -43,32 +73,33 @@ public class Main {
             else{
                 lastReadTime = new Date();
             }
+            logger.info(new Date() + " 读取上一次时间完成");
             r.close();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            logger.error(new Date() + " 未找到配置文件，请在config目录下添加lastReadTime.txt,设置上一次读取的时间。时间格式 2000-02-23 12:12:12\n"  + e.getStackTrace());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(new Date() + " 读取上一次时间配置文件失败！\n" + e.getStackTrace());
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.error(new Date() + " 日期格式错误，解析错误\n" + e.getStackTrace());
         }
 
     }
 
-    /**
-     *
-     */
-    public static void readAllOrders(){
-        thread.exit = true;
-//        System.out.println("每隔5分钟读取医嘱线程退出");
-        MainWindow.showMessage("暂停监听...");
-        //读取医嘱数据
-        reader.ReadAllLongTermOrder();
-        reader.ReadAllShortTermOrder();
-
-        thread = new ReadOrderThread(new Date(),reader,INTERVAL);
-        thread.start();
-//        System.out.println("每隔5分钟读取医嘱线程重新开始");
-        MainWindow.showMessage("继续监听...");
-    }
+//    /**
+//     *
+//     */
+//    public static void readAllOrders(){
+//        thread.exit = true;
+////        System.out.println("每隔5分钟读取医嘱线程退出");
+//        MainWindow.showMessage("暂停监听...");
+//        //读取医嘱数据
+//        reader.ReadAllLongTermOrder();
+//        reader.ReadAllShortTermOrder();
+//
+//        thread = new ReadOrderThread(lastReadTime,reader,INTERVAL);
+//        thread.start();
+////        System.out.println("每隔5分钟读取医嘱线程重新开始");
+//        MainWindow.showMessage("继续监听...");
+//    }
 
 }

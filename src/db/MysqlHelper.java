@@ -1,15 +1,17 @@
 package db;
 
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+import launcher.Main;
+import org.apache.log4j.Logger;
 
 import java.sql.*;
+import java.util.Date;
 
 /**
  * Created by 31344 on 2016/2/24.
- * Á¬½ÓÑªÍ¸Êı¾İ¿â£¬mysql
+ * è¿æ¥è¡€é€æ•°æ®åº“ï¼Œmysql
  */
 public class MysqlHelper {
-
+    private Logger logger = Main.logger;
     private Connection connection;
     String url;
     String user;
@@ -22,26 +24,24 @@ public class MysqlHelper {
     }
 
     /**
-     * ½¨Á¢Êı¾İ¿âÁ¬½Ó
+     * å»ºç«‹æ•°æ®åº“è¿æ¥
      */
     public void getConnection(){
         try {
-            //¶¯Ì¬¼ÓÔØmysqlÇı¶¯
+            //åŠ¨æ€åŠ è½½mysqlé©±åŠ¨
             Class.forName("com.mysql.jdbc.Driver");
 
-            //½¨Á¢Á¬½Ó
+            //å»ºç«‹è¿æ¥
             connection = DriverManager.getConnection(url, user, password);
         } catch (ClassNotFoundException e) {
-            System.out.println("¼ÓÔØmysqlÇı¶¯Ê§°Ü£¡");
-            e.printStackTrace();
+            logger.error(new Date() + " åŠ è½½mysqlé©±åŠ¨å¤±è´¥\n" + e.getStackTrace());
         } catch (SQLException e) {
-            System.out.println("½¨Á¢Êı¾İ¿âÁ¬½ÓÊ§°Ü£¡");
-            e.printStackTrace();
+            logger.error(new Date() + " å»ºç«‹mysqlè¿æ¥å¤±è´¥\n" + e.getStackTrace());
         }
     }
 
     /**
-     * Ö´ĞĞ¸üĞÂ£¬²åÈëÓï¾ä
+     * æ‰§è¡Œæ›´æ–°ï¼Œæ’å…¥è¯­å¥
      * @param sql
      */
     public void executeUpdate(String sql){
@@ -50,38 +50,35 @@ public class MysqlHelper {
             s = connection.createStatement();
             int result = s.executeUpdate(sql);
         } catch (SQLException e) {
-            System.out.println("¸üĞÂÊ§°Ü");
-            e.printStackTrace();
+            logger.error(new Date() + " æ‰§è¡Œmysqlæ›´æ–°é”™è¯¯\n" + e.getStackTrace());
         }
     }
 
-    /**
-     * Ö´ĞĞ²éÑ¯Óï¾ä
-     * @param sql
-     */
-    public ResultSet executeQuery(String sql){
-        Statement s = null;
-        ResultSet rs = null;
-        try {
-            s = connection.createStatement();
-            rs = s.executeQuery(sql);
-            return rs;
-        } catch (SQLException e) {
-            System.out.println("²éÑ¯Ê§°Ü");
-            e.printStackTrace();
-        }
-        return null;
-    }
+//    /**
+//     * æ‰§è¡ŒæŸ¥è¯¢è¯­å¥
+//     * @param sql
+//     */
+//    public ResultSet executeQuery(String sql){
+//        Statement s = null;
+//        ResultSet rs = null;
+//        try {
+//            s = connection.createStatement();
+//            rs = s.executeQuery(sql);
+//            return rs;
+//        } catch (SQLException e) {
+//            logger.error(new Date() + " æ‰§è¡ŒmysqlæŸ¥è¯¢é”™è¯¯\n" + e.getStackTrace());
+//        }
+//        return null;
+//    }
 
     /**
-     * ¹Ø±ÕÁ¬½Ó
+     * å…³é—­è¿æ¥
      */
     public void closeConnection(){
         try {
             connection.close();
         } catch (SQLException e) {
-            System.out.println("¹Ø±ÕmysqlÊı¾İ¿âÁ¬½ÓÊ§°Ü£¡");
-            e.printStackTrace();
+            logger.error(new Date() + " å…³é—­mysqlè¿æ¥å¤±è´¥\n" + e.getStackTrace());
         }
     }
 

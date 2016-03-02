@@ -1,9 +1,11 @@
 package hisImpl;
 
+import launcher.Main;
 import model.LongTermOrder;
 import model.ShortTermOrder;
 import db.OracleHelper;
 import hisInterface.OrderInterface;
+import org.apache.log4j.Logger;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,6 +19,7 @@ import java.util.Date;
  * 中国人民解放军第117医院医嘱接口实现
  */
 public class OrderImplOf117Hospital implements OrderInterface{
+    private Logger logger = Main.logger;
 
     private static final String LongTermOrderViewName = "longterm_order_117";
     private static final String ShortTermOrderViewName = "shortterm_order_117";
@@ -32,22 +35,21 @@ public class OrderImplOf117Hospital implements OrderInterface{
 
 
 
-    /**
-     * 获取所有病人的长期医嘱
-     */
-    @Override
-    public ArrayList<LongTermOrder> getAllLongTermOrder() {
-        helper.getConnection();
-        ArrayList<LongTermOrder> orders = new ArrayList<LongTermOrder>();
-
-        String sql = "SELECT * from \""+ LongTermOrderViewName +"\"";
-        ResultSet rs = helper.executeQuery(sql);
-
-        orders = readLongTermOrderData(rs);
-
-        helper.closeConnection();
-        return orders;
-    }
+//    /**
+//     * 获取所有病人的长期医嘱
+//     */
+//    public ArrayList<LongTermOrder> getAllLongTermOrder() {
+//        helper.getConnection();
+//        ArrayList<LongTermOrder> orders = new ArrayList<LongTermOrder>();
+//
+//        String sql = "SELECT * from \""+ LongTermOrderViewName +"\"";
+//        ResultSet rs = helper.executeQuery(sql);
+//
+//        orders = readLongTermOrderData(rs);
+//
+//        helper.closeConnection();
+//        return orders;
+//    }
 
     /**
      * 解析longtermorder的resultSet
@@ -74,7 +76,7 @@ public class OrderImplOf117Hospital implements OrderInterface{
                     o.setLgord_dateord(dateFormat.format(date));
                     o.setLgord_timeord(timeFormat.format(date));
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    logger.error(new Date() + " 解析开始日期错误\n" + e.getStackTrace());
                 }
                 o.setLgord_usr1(rs.getString("lgord_usr1"));
                 o.setLgord_drug(rs.getString("lgord_drug"));
@@ -93,7 +95,7 @@ public class OrderImplOf117Hospital implements OrderInterface{
                         o.setLgord_dtactst(dateFormat.format(new Date()));
                     }
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    logger.error(new Date() + " 解析停止日期错误\n" + e.getStackTrace());
                 }
                 o.setLgord_usr2(rs.getString("nurse"));
                 o.setLgord_comment(rs.getString("lgord_comment"));
@@ -106,7 +108,7 @@ public class OrderImplOf117Hospital implements OrderInterface{
 
             return orders;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(new Date() + " 读取查询到的医嘱结果错误\n" + e.getStackTrace());
         }
         return null;
     }
@@ -134,7 +136,7 @@ public class OrderImplOf117Hospital implements OrderInterface{
                         date = new Date();
                     }
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    logger.error(new Date() + " 解析开始日期错误\n" + e.getStackTrace());
                 }
                 o.setShord_usr1(rs.getString("shord_usr1"));
                 o.setShord_drug(rs.getString("shord_drug"));
@@ -153,7 +155,7 @@ public class OrderImplOf117Hospital implements OrderInterface{
                         o.setShord_dtactst(dateFormat.format(new Date()));
                     }
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    logger.error(new Date() + " 解析停用日期错误\n" + e.getStackTrace());
                 }
                 o.setShord_usr2(rs.getString("nurse"));
                 o.setShord_comment(rs.getString("shord_comment"));
@@ -166,34 +168,28 @@ public class OrderImplOf117Hospital implements OrderInterface{
 
             return orders;
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(new Date() + " 读取查询数据错误\n" + e.getStackTrace());
         }
         return null;
     }
 
-    @Override
-    public ArrayList<LongTermOrder> getAllLongTermOrder(String id) {
-        return null;
-    }
 
-    @Override
-    public ArrayList<ShortTermOrder> getAllShortTermOrder() {
-        helper.getConnection();
-        ArrayList<ShortTermOrder> orders = new ArrayList<ShortTermOrder>();
+//    public ArrayList<ShortTermOrder> getAllShortTermOrder() {
+//        helper.getConnection();
+//        ArrayList<ShortTermOrder> orders = new ArrayList<ShortTermOrder>();
+//
+//        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\"";
+//        ResultSet rs = helper.executeQuery(sql);
+//
+//        orders = readShortTermOrderData(rs);
+//
+//        helper.closeConnection();
+//        return orders;
+//    }
 
-        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\"";
-        ResultSet rs = helper.executeQuery(sql);
-
-        orders = readShortTermOrderData(rs);
-
-        helper.closeConnection();
-        return orders;
-    }
-
-    @Override
-    public ArrayList<ShortTermOrder> getAllShortTermOrder(String id) {
-        return null;
-    }
+//    public ArrayList<ShortTermOrder> getAllShortTermOrder(String id) {
+//        return null;
+//    }
 
     @Override
     public ArrayList<LongTermOrder> getUpdatedLongTermOrder(Date date) {

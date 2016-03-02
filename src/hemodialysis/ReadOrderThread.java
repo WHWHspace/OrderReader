@@ -1,7 +1,7 @@
 package hemodialysis;
 
-import sun.applet.Main;
-import ui.MainWindow;
+import launcher.Main;
+import org.apache.log4j.Logger;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,6 +16,7 @@ import java.util.Date;
 public class ReadOrderThread extends Thread{
 
     public volatile boolean exit = false;
+    private static Logger logger = Main.logger;
 
     Date date;
     OrderReader reader;
@@ -30,8 +31,7 @@ public class ReadOrderThread extends Thread{
     @Override
     public void run() {
         while (!exit){
-//            System.out.println(date);               //上一次读取数据的时间
-            MainWindow.showMessage(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
+            logger.info(date);
             Date currentDate = new Date();          //现在的时间
             writeLastReadTime(currentDate);
             reader.ReadNewAddedLongTermOrder(date); //读取上一次到现在之间的数据
@@ -40,7 +40,7 @@ public class ReadOrderThread extends Thread{
             try {
                 Thread.sleep(interval);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error(new Date() + " 暂停线程错误\n" + e.getStackTrace());
             }
         }
     }
@@ -48,11 +48,11 @@ public class ReadOrderThread extends Thread{
     private void writeLastReadTime(Date currentDate) {
         try {
             String path = System.getProperty("user.dir");
-            BufferedWriter w = new BufferedWriter(new FileWriter(new File(path + "/timerecord/lastReadTime.txt"),false));
-            w.write(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(date));
+            BufferedWriter w = new BufferedWriter(new FileWriter(new File(path + "/config/lastReadTime.txt"),false));
+            w.write(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(currentDate));
             w.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(new Date() + " 写入上一次读取时间错误\n" + e.getStackTrace());
         }
     }
 }
