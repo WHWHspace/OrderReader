@@ -34,9 +34,9 @@ public class MysqlHelper {
             //建立连接
             connection = DriverManager.getConnection(url, user, password);
         } catch (ClassNotFoundException e) {
-            logger.error(new Date() + " 加载mysql驱动失败\n" + e.getStackTrace());
+            logger.error(new Date() + " 加载mysql驱动失败\n" + e);
         } catch (SQLException e) {
-            logger.error(new Date() + " 建立mysql连接失败\n" + e.getStackTrace());
+            logger.error(new Date() + " 建立mysql连接失败\n" + e);
         }
     }
 
@@ -50,26 +50,26 @@ public class MysqlHelper {
             s = connection.createStatement();
             int result = s.executeUpdate(sql);
         } catch (SQLException e) {
-            logger.error(new Date() + " 执行mysql更新错误\n" + e.getStackTrace());
+            logger.error(new Date() + " 执行mysql更新错误\n" + e);
         }
     }
 
-//    /**
-//     * 执行查询语句
-//     * @param sql
-//     */
-//    public ResultSet executeQuery(String sql){
-//        Statement s = null;
-//        ResultSet rs = null;
-//        try {
-//            s = connection.createStatement();
-//            rs = s.executeQuery(sql);
-//            return rs;
-//        } catch (SQLException e) {
-//            logger.error(new Date() + " 执行mysql查询错误\n" + e.getStackTrace());
-//        }
-//        return null;
-//    }
+    /**
+     * 执行查询语句
+     * @param sql
+     */
+    public ResultSet executeQuery(String sql){
+        Statement s = null;
+        ResultSet rs = null;
+        try {
+            s = connection.createStatement();
+            rs = s.executeQuery(sql);
+            return rs;
+        } catch (SQLException e) {
+            logger.error(new Date() + " 执行mysql查询错误\n" + e);
+        }
+        return null;
+    }
 
     /**
      * 关闭连接
@@ -78,7 +78,7 @@ public class MysqlHelper {
         try {
             connection.close();
         } catch (SQLException e) {
-            logger.error(new Date() + " 关闭mysql连接失败\n" + e.getStackTrace());
+            logger.error(new Date() + " 关闭mysql连接失败\n" + e);
         }
     }
 

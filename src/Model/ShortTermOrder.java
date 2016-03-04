@@ -2,22 +2,22 @@ package model;
 
 /**
  * Created by 31344 on 2016/2/24.
- * ¶ÌÆÚÒ½Öö
+ * çŸ­æœŸåŒ»å˜±
  */
 public class ShortTermOrder {
     private int shord_id;           //id
-    private String shord_patic;     //²¡ÈË±àºÅ
-    private String shord_dateord;   //ÈÕÆÚ
-    private String shord_timeord;   //Ê±¼ä
-    private String shord_usr1;      //¾­ÖÎÒ½Éú
-    private String shord_drug;      //Ò©Æ·Ãû³Æ
-    private String shord_actst;     //ÊÇ·ñÆôÓÃ
-    private String shord_dtactst;   //Í£ÓÃÊ±¼ä
-    private String shord_usr2;      //¼ÇÂ¼ÈË
-    private String shord_comment;   //±¸×¢
-    private String shord_intake;    //¼ÁÁ¿
-    private String shord_freq;      //ÆµÂÊ
-    private String shord_medway;    //¸øÒ©·½Ê½
+    private String shord_patic;     //ç—…äººç¼–å·
+    private String shord_dateord;   //æ—¥æœŸ
+    private String shord_timeord;   //æ—¶é—´
+    private String shord_usr1;      //ç»æ²»åŒ»ç”Ÿ
+    private String shord_drug;      //è¯å“åç§°
+    private String shord_actst;     //æ˜¯å¦å¯ç”¨
+    private String shord_dtactst;   //åœç”¨æ—¶é—´
+    private String shord_usr2;      //è®°å½•äºº
+    private String shord_comment;   //å¤‡æ³¨
+    private String shord_intake;    //å‰‚é‡
+    private String shord_freq;      //é¢‘ç‡
+    private String shord_medway;    //ç»™è¯æ–¹å¼
 
 
     public int getShord_id() {

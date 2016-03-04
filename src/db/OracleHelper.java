@@ -25,26 +25,26 @@ public class OracleHelper {
 
     public void getConnection(){
         try {
-            //动态加载mysql驱动
+            //鍔ㄦ�佸姞杞絤ysql椹卞姩
             Class.forName("oracle.jdbc.driver.OracleDriver");
 
-            //建立连接
+            //寤虹珛杩炴帴
             connection = DriverManager.getConnection(url, user, password);
         } catch (ClassNotFoundException e) {
-            logger.error(new Date() + " 加载oracle驱动失败\n" + e.getStackTrace());
+            logger.error(new Date() + " 鍔犺浇oracle椹卞姩澶辫触\n" + e);
         } catch (SQLException e) {
-            logger.error(new Date() + " 建立oracle连接失败\n" + e.getStackTrace());
+            logger.error(new Date() + " 寤虹珛oracle杩炴帴澶辫触\n" + e);
         }
     }
 
     /**
-     * 关闭连接
+     * 鍏抽棴杩炴帴
      */
     public void closeConnection(){
         try {
             connection.close();
         } catch (SQLException e) {
-            logger.error(new Date() + " 关闭oracle数据库连接失败\n" + e.getStackTrace());
+            logger.error(new Date() + " 鍏抽棴oracle鏁版嵁搴撹繛鎺ュけ璐n" + e);
         }
     }
 
@@ -56,7 +56,7 @@ public class OracleHelper {
             rs = s.executeQuery(sql);
             return rs;
         } catch (SQLException e) {
-            logger.error(new Date() + " 查询oracle数据库失败\n" + e.getStackTrace());
+            logger.error(new Date() + " 鏌ヨoracle鏁版嵁搴撳け璐n" + e);
         }
         return  null;
     }

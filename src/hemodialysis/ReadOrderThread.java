@@ -31,16 +31,16 @@ public class ReadOrderThread extends Thread{
     @Override
     public void run() {
         while (!exit){
-            logger.info(date);
-            Date currentDate = new Date();          //ÏÖÔÚµÄÊ±¼ä
+            Date currentDate = new Date();          //ç°åœ¨çš„æ—¶é—´
             writeLastReadTime(currentDate);
-            reader.ReadNewAddedLongTermOrder(date); //¶ÁÈ¡ÉÏÒ»´Îµ½ÏÖÔÚÖ®¼äµÄÊı¾İ
+            logger.info(currentDate);
+            reader.ReadNewAddedLongTermOrder(date); //è¯»å–ä¸Šä¸€æ¬¡åˆ°ç°åœ¨ä¹‹é—´çš„æ•°æ®
             reader.ReadNewAddedShortTermOrder(date);
-            date = currentDate;                     //¸úĞÂÉÏÒ»´Î¶ÁÈ¡µÄÊ±¼ä
+            date = currentDate;                     //è·Ÿæ–°ä¸Šä¸€æ¬¡è¯»å–çš„æ—¶é—´
             try {
                 Thread.sleep(interval);
             } catch (InterruptedException e) {
-                logger.error(new Date() + " ÔİÍ£Ïß³Ì´íÎó\n" + e.getStackTrace());
+                logger.error(new Date() + " æš‚åœçº¿ç¨‹é”™è¯¯\n" + e);
             }
         }
     }
@@ -52,7 +52,7 @@ public class ReadOrderThread extends Thread{
             w.write(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(currentDate));
             w.close();
         } catch (IOException e) {
-            logger.error(new Date() + " Ğ´ÈëÉÏÒ»´Î¶ÁÈ¡Ê±¼ä´íÎó\n" + e.getStackTrace());
+            logger.error(new Date() + " å†™å…¥ä¸Šä¸€æ¬¡è¯»å–æ—¶é—´é”™è¯¯\n" + e);
         }
     }
 }
