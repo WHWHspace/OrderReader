@@ -23,17 +23,18 @@ import java.util.Date;
 public class OrderImplOf117Hospital implements OrderInterface{
     private Logger logger = Main.logger;
 
-//    private static final String LongTermOrderViewName = "LONGTERM_ORDER";
-//    private static final String ShortTermOrderViewName = "SHORTTERM_ORDER";
-//    private static final String url = "jdbc:oracle:thin:@132.147.160.7:1521:orcl";
-//    private static final String user = "lab";
-//    private static final String password = "lab117";
+    private static final String LongTermOrderViewName = "LONGTERM_ORDER";
+    private static final String ShortTermOrderViewName = "SHORTTERM_ORDER";
+    private static final String url = "jdbc:oracle:thin:@132.147.160.7:1521:orcl";
+    private static final String user = "lab";
+    private static final String password = "lab117";
 
-    private static final String LongTermOrderViewName = "longterm_order";
-    private static final String ShortTermOrderViewName = "shortterm_order";
-    private static final String url = "jdbc:oracle:thin:@127.0.0.1:1521:orcl";
-    private static final String user = "test";
-    private static final String password = "123456";
+//    private static final String LongTermOrderViewName = "longterm_order";
+//    private static final String ShortTermOrderViewName = "shortterm_order";
+//    private static final String url = "jdbc:oracle:thin:@127.0.0.1:1521:orcl";
+//    private static final String user = "test";
+//    private static final String password = "123456";
+
     private OracleHelper helper;
 
     MysqlHelper mysqlHelper;
@@ -213,8 +214,8 @@ public class OrderImplOf117Hospital implements OrderInterface{
         ArrayList<LongTermOrder> orders = new ArrayList<LongTermOrder>();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        String sql = "SELECT * from \""+ LongTermOrderViewName +"\" WHERE \"ENTER_DATE_TIME\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"ENTER_DATE_TIME\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
-        String sql = "SELECT * from \""+ LongTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"enter_date_time\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
+        String sql = "SELECT * from \""+ LongTermOrderViewName +"\" WHERE \"ENTER_DATE_TIME\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"ENTER_DATE_TIME\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
+//        String sql = "SELECT * from \""+ LongTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"enter_date_time\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
         ResultSet rs = helper.executeQuery(sql);
         orders = readLongTermOrderData(rs);
 
@@ -228,8 +229,8 @@ public class OrderImplOf117Hospital implements OrderInterface{
         ArrayList<ShortTermOrder> orders = new ArrayList<ShortTermOrder>();
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\" WHERE \"ENTER_DATE_TIME\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"ENTER_DATE_TIME\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
-        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"enter_date_time\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
+        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\" WHERE \"ENTER_DATE_TIME\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"ENTER_DATE_TIME\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
+//        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"enter_date_time\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
         ResultSet rs = helper.executeQuery(sql);
         orders = readShortTermOrderData(rs);
 
@@ -248,9 +249,10 @@ public class OrderImplOf117Hospital implements OrderInterface{
         idsSql = BuildSqlString(ids);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        String sql = "SELECT * from \""+ LongTermOrderViewName +"\" WHERE \"ENTER_DATE_TIME\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"ENTER_DATE_TIME\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
-        String sql = "SELECT * from \""+ LongTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"enter_date_time\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss') " +
-                "and \"lgord_patic\" in " + idsSql;
+        String sql = "SELECT * from \""+ LongTermOrderViewName +"\" WHERE \"ENTER_DATE_TIME\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"ENTER_DATE_TIME\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss') " +
+                "and \"LGORD_PATIC\" in " + idsSql;
+//        String sql = "SELECT * from \""+ LongTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"enter_date_time\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss') " +
+//                "and \"lgord_patic\" in " + idsSql;
         ResultSet rs = helper.executeQuery(sql);
         orders = readLongTermOrderData(rs);
 
@@ -271,9 +273,10 @@ public class OrderImplOf117Hospital implements OrderInterface{
         idsSql = BuildSqlString(ids);
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\" WHERE \"ENTER_DATE_TIME\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"ENTER_DATE_TIME\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
-        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"enter_date_time\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')" +
-                "and \"shord_patic\" in " + idsSql;
+        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\" WHERE \"ENTER_DATE_TIME\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"ENTER_DATE_TIME\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss') " +
+                "and \"LGORD_PATIC\" in " + idsSql;
+//        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"enter_date_time\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')" +
+//                "and \"shord_patic\" in " + idsSql;
         ResultSet rs = helper.executeQuery(sql);
         orders = readShortTermOrderData(rs);
 
