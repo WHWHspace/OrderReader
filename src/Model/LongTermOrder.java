@@ -1,9 +1,5 @@
 package model;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-
 /**
  * Created by 31344 on 2016/2/24.
  * ³¤ÆÚÒ½Öö
@@ -36,7 +32,7 @@ public class LongTermOrder {
     }
 
     public void setLgord_patic(String lgord_patic) {
-        this.lgord_patic = changeGBKEncodingToUtf8(lgord_patic);
+        this.lgord_patic = checkNull(lgord_patic);
     }
 
     public String getLgord_dateord() {
@@ -44,7 +40,7 @@ public class LongTermOrder {
     }
 
     public void setLgord_dateord(String lgord_dateord) {
-        this.lgord_dateord = changeGBKEncodingToUtf8(lgord_dateord);
+        this.lgord_dateord = checkNull(lgord_dateord);
     }
 
     public String getLgord_timeord() {
@@ -52,7 +48,7 @@ public class LongTermOrder {
     }
 
     public void setLgord_timeord(String lgord_timeord) {
-        this.lgord_timeord = changeGBKEncodingToUtf8(lgord_timeord);
+        this.lgord_timeord = checkNull(lgord_timeord);
     }
 
     public String getLgord_usr1() {
@@ -60,10 +56,13 @@ public class LongTermOrder {
     }
 
     public void setLgord_usr1(String lgord_usr1) {
-        this.lgord_usr1 = changeGBKEncodingToUtf8(lgord_usr1);
+        this.lgord_usr1 = checkNull(lgord_usr1);
     }
 
-    private String changeGBKEncodingToUtf8(String s) {
+    private String checkNull(String s) {
+        if(s == null){
+            return "";
+        }
         return s;
     }
 
@@ -72,7 +71,7 @@ public class LongTermOrder {
     }
 
     public void setLgord_drug(String lgord_drug) {
-        this.lgord_drug = changeGBKEncodingToUtf8(lgord_drug);
+        this.lgord_drug = checkNull(lgord_drug);
     }
 
     public String getLgord_actst() {
@@ -80,7 +79,7 @@ public class LongTermOrder {
     }
 
     public void setLgord_actst(String lgord_actst) {
-        this.lgord_actst = changeGBKEncodingToUtf8(lgord_actst);
+        this.lgord_actst = checkNull(lgord_actst);
     }
 
     public String getLgord_dtactst() {
@@ -88,7 +87,7 @@ public class LongTermOrder {
     }
 
     public void setLgord_dtactst(String lgord_dtactst) {
-        this.lgord_dtactst = changeGBKEncodingToUtf8(lgord_dtactst);
+        this.lgord_dtactst = checkNull(lgord_dtactst);
     }
 
     public String getLgord_usr2() {
@@ -96,7 +95,7 @@ public class LongTermOrder {
     }
 
     public void setLgord_usr2(String lgord_usr2) {
-        this.lgord_usr2 = changeGBKEncodingToUtf8(lgord_usr2);
+        this.lgord_usr2 = checkNull(lgord_usr2);
     }
 
     public String getLgord_comment() {
@@ -104,7 +103,7 @@ public class LongTermOrder {
     }
 
     public void setLgord_comment(String lgord_comment) {
-        this.lgord_comment = changeGBKEncodingToUtf8(lgord_comment);
+        this.lgord_comment = checkNull(lgord_comment);
     }
 
     public String getLgord_intake() {
@@ -112,7 +111,7 @@ public class LongTermOrder {
     }
 
     public void setLgord_intake(String lgord_intake) {
-        this.lgord_intake = changeGBKEncodingToUtf8(lgord_intake);
+        this.lgord_intake = checkNull(lgord_intake);
     }
 
     public String getLgord_freq() {
@@ -120,7 +119,7 @@ public class LongTermOrder {
     }
 
     public void setLgord_freq(String lgord_freq) {
-        this.lgord_freq = changeGBKEncodingToUtf8(lgord_freq);
+        this.lgord_freq = checkNull(lgord_freq);
     }
 
     public String getLgord_medway() {
@@ -128,6 +127,6 @@ public class LongTermOrder {
     }
 
     public void setLgord_medway(String lgord_medway) {
-        this.lgord_medway = changeGBKEncodingToUtf8(lgord_medway);
+        this.lgord_medway = checkNull(lgord_medway);
     }
 }

@@ -33,7 +33,7 @@ public class ShortTermOrder {
     }
 
     public void setShord_patic(String shord_patic) {
-        this.shord_patic = shord_patic;
+        this.shord_patic = checkNull(shord_patic);
     }
 
     public String getShord_dateord() {
@@ -41,7 +41,7 @@ public class ShortTermOrder {
     }
 
     public void setShord_dateord(String shord_dateord) {
-        this.shord_dateord = shord_dateord;
+        this.shord_dateord = checkNull(shord_dateord);
     }
 
     public String getShord_timeord() {
@@ -49,7 +49,7 @@ public class ShortTermOrder {
     }
 
     public void setShord_timeord(String shord_timeord) {
-        this.shord_timeord = shord_timeord;
+        this.shord_timeord = checkNull(shord_timeord);
     }
 
     public String getShord_usr1() {
@@ -57,7 +57,7 @@ public class ShortTermOrder {
     }
 
     public void setShord_usr1(String shord_usr1) {
-        this.shord_usr1 = shord_usr1;
+        this.shord_usr1 = checkNull(shord_usr1);
     }
 
     public String getShord_drug() {
@@ -65,7 +65,7 @@ public class ShortTermOrder {
     }
 
     public void setShord_drug(String shord_drug) {
-        this.shord_drug = shord_drug;
+        this.shord_drug = checkNull(shord_drug);
     }
 
     public String getShord_actst() {
@@ -73,7 +73,7 @@ public class ShortTermOrder {
     }
 
     public void setShord_actst(String shord_actst) {
-        this.shord_actst = shord_actst;
+        this.shord_actst = checkNull(shord_actst);
     }
 
     public String getShord_dtactst() {
@@ -81,7 +81,7 @@ public class ShortTermOrder {
     }
 
     public void setShord_dtactst(String shord_dtactst) {
-        this.shord_dtactst = shord_dtactst;
+        this.shord_dtactst = checkNull(shord_dtactst);
     }
 
     public String getShord_usr2() {
@@ -89,7 +89,7 @@ public class ShortTermOrder {
     }
 
     public void setShord_usr2(String shord_usr2) {
-        this.shord_usr2 = shord_usr2;
+        this.shord_usr2 = checkNull(shord_usr2);
     }
 
     public String getShord_comment() {
@@ -97,7 +97,7 @@ public class ShortTermOrder {
     }
 
     public void setShord_comment(String shord_comment) {
-        this.shord_comment = shord_comment;
+        this.shord_comment = checkNull(shord_comment);
     }
 
     public String getShord_intake() {
@@ -105,7 +105,7 @@ public class ShortTermOrder {
     }
 
     public void setShord_intake(String shord_intake) {
-        this.shord_intake = shord_intake;
+        this.shord_intake = checkNull(shord_intake);
     }
 
     public String getShord_freq() {
@@ -113,7 +113,7 @@ public class ShortTermOrder {
     }
 
     public void setShord_freq(String shord_freq) {
-        this.shord_freq = shord_freq;
+        this.shord_freq = checkNull(shord_freq);
     }
 
     public String getShord_medway() {
@@ -121,6 +121,13 @@ public class ShortTermOrder {
     }
 
     public void setShord_medway(String shord_medway) {
-        this.shord_medway = shord_medway;
+        this.shord_medway = checkNull(shord_medway);
+    }
+
+    private String checkNull(String s) {
+        if(s == null){
+            return "";
+        }
+        return s;
     }
 }

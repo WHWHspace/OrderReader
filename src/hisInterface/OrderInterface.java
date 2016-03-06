@@ -24,9 +24,15 @@ public interface OrderInterface {
 //    //获取指定病人的短期医嘱
 //    public ArrayList<ShortTermOrder> getAllShortTermOrder(String id);
 
-    //获取所有病人某一时间之后新增的长期医嘱
-    public ArrayList<LongTermOrder> getUpdatedLongTermOrder(Date date);
+    //获取所有病人某一段时间内新增的长期医嘱
+    public ArrayList<LongTermOrder> getUpdatedLongTermOrder(Date fromDate,Date toDate);
 
-    //获取所有病人某一时间之后新增的短期医嘱
-    public ArrayList<ShortTermOrder> getUpdatedShortTermOrder(Date date);
+    //根据病人id获取某一段时间内新增的长期医嘱
+    public ArrayList<LongTermOrder> getUpdatedLongTermOrder(Date fromDate,Date toDate, ArrayList<String> ids);
+
+    //获取所有病人某一段时间内新增的短期医嘱
+    public ArrayList<ShortTermOrder> getUpdatedShortTermOrder(Date fromDate,Date toDate);
+
+    //根据病人id获取某一段时间内新增的短期医嘱
+    public ArrayList<ShortTermOrder> getUpdatedShortTermOrder(Date fromDate,Date toDate, ArrayList<String> ids);
 }

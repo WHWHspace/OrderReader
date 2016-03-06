@@ -34,8 +34,8 @@ public class ReadOrderThread extends Thread{
             Date currentDate = new Date();          //现在的时间
             writeLastReadTime(currentDate);
             logger.info(currentDate);
-            reader.ReadNewAddedLongTermOrder(date); //读取上一次到现在之间的数据
-            reader.ReadNewAddedShortTermOrder(date);
+            reader.ReadNewAddedLongTermOrder(date,currentDate); //读取上一次到现在之间的数据
+            reader.ReadNewAddedShortTermOrder(date,currentDate);
             date = currentDate;                     //跟新上一次读取的时间
             try {
                 Thread.sleep(interval);
