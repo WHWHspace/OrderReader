@@ -39,7 +39,7 @@ public class OrderReader {
      * @param fromDate
      * @param toDate
      */
-    public void ReadNewAddedLongTermOrder(Date fromDate,Date toDate){
+    public void readNewAddedLongTermOrder(Date fromDate,Date toDate){
         ArrayList<LongTermOrder> orders = hisImpl.getUpdatedLongTermOrder(fromDate, toDate);
         insertLongTermOrder(orders);
     }
@@ -49,7 +49,7 @@ public class OrderReader {
      * @param fromDate
      * @param toDate
      */
-    public void ReadNewAddedShortTermOrder(Date fromDate,Date toDate){
+    public void readNewAddedShortTermOrder(Date fromDate,Date toDate){
         ArrayList<ShortTermOrder> orders = hisImpl.getUpdatedShortTermOrder(fromDate, toDate);
         insertShortTermOrder(orders);
     }
@@ -59,7 +59,7 @@ public class OrderReader {
      * @param fromDate
      * @param toDate
      */
-    public void ReadNewAddedLongTermOrderByIDs(Date fromDate,Date toDate){
+    public void readNewAddedLongTermOrderByIDs(Date fromDate,Date toDate){
         ArrayList<String> ids = getPatientIds();
 
         ArrayList<LongTermOrder> orders = hisImpl.getUpdatedLongTermOrder(fromDate, toDate, ids);
@@ -71,7 +71,7 @@ public class OrderReader {
      * @param fromDate
      * @param toDate
      */
-    public void ReadNewAddedShortTermOrderByIDs(Date fromDate,Date toDate){
+    public void readNewAddedShortTermOrderByIDs(Date fromDate,Date toDate){
         ArrayList<String> ids = getPatientIds();
 
         ArrayList<ShortTermOrder> orders = hisImpl.getUpdatedShortTermOrder(fromDate, toDate, ids);

@@ -44,24 +44,6 @@ public class OrderImplOf117Hospital implements OrderInterface{
     }
 
 
-
-
-//    /**
-//     * 获取所有病人的长期医嘱
-//     */
-//    public ArrayList<LongTermOrder> getAllLongTermOrder() {
-//        helper.getConnection();
-//        ArrayList<LongTermOrder> orders = new ArrayList<LongTermOrder>();
-//
-//        String sql = "SELECT * from \""+ LongTermOrderViewName +"\"";
-//        ResultSet rs = helper.executeQuery(sql);
-//
-//        orders = readLongTermOrderData(rs);
-//
-//        helper.closeConnection();
-//        return orders;
-//    }
-
     /**
      * 解析longtermorder的resultSet
      * @param rs
@@ -117,11 +99,11 @@ public class OrderImplOf117Hospital implements OrderInterface{
                 }
                 o.setLgord_usr2(rs.getString("nurse"));
                 o.setLgord_comment(rs.getString("lgord_comment"));
-                o.setLgord_intake(rs.getString("dosage") + rs.getString("dosage_units"));
+                String dosage = ((rs.getString("dosage")==null)?"":rs.getString("dosage"));
+                String dosage_units = ((rs.getString("dosage_units")==null)?"":rs.getString("dosage_units"));
+                o.setLgord_intake(dosage + dosage_units);
                 o.setLgord_freq(rs.getString("lgord_freq"));
                 o.setLgord_medway(rs.getString("lgord_medway"));
-
-                logger.info(o.getLgord_drug());
 
                 orders.add(o);
             }
@@ -207,7 +189,9 @@ public class OrderImplOf117Hospital implements OrderInterface{
                 }
                 o.setShord_usr2(rs.getString("nurse"));
                 o.setShord_comment(rs.getString("shord_comment"));
-                o.setShord_intake(rs.getString("dosage") + rs.getString("dosage_units"));
+                String dosage = ((rs.getString("dosage")==null)?"":rs.getString("dosage"));
+                String dosage_units = ((rs.getString("dosage_units")==null)?"":rs.getString("dosage_units"));
+                o.setShord_intake(dosage + dosage_units);
                 o.setShord_freq(rs.getString("shord_freq"));
                 o.setShord_medway(rs.getString("shord_medway"));
 
@@ -255,15 +239,62 @@ public class OrderImplOf117Hospital implements OrderInterface{
 
     @Override
     public ArrayList<LongTermOrder> getUpdatedLongTermOrder(Date fromDate, Date toDate, ArrayList<String> ids) {
-        return null;
+        helper.getConnection();
+        ArrayList<LongTermOrder> orders = new ArrayList<LongTermOrder>();
+        if((ids == null)||(ids.size() == 0)){
+            return orders;
+        }
+        String idsSql = "";
+        idsSql = BuildSqlString(ids);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        String sql = "SELECT * from \""+ LongTermOrderViewName +"\" WHERE \"ENTER_DATE_TIME\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"ENTER_DATE_TIME\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
+        String sql = "SELECT * from \""+ LongTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"enter_date_time\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss') " +
+                "and \"lgord_patic\" in " + idsSql;
+        ResultSet rs = helper.executeQuery(sql);
+        orders = readLongTermOrderData(rs);
+
+        helper.closeConnection();
+        return orders;
     }
+
+
 
     @Override
     public ArrayList<ShortTermOrder> getUpdatedShortTermOrder(Date fromDate, Date toDate, ArrayList<String> ids) {
-        return null;
+        helper.getConnection();
+        ArrayList<ShortTermOrder> orders = new ArrayList<ShortTermOrder>();
+        if((ids == null)||(ids.size() == 0)){
+            return orders;
+        }
+        String idsSql = "";
+        idsSql = BuildSqlString(ids);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\" WHERE \"ENTER_DATE_TIME\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"ENTER_DATE_TIME\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
+        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"enter_date_time\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')" +
+                "and \"shord_patic\" in " + idsSql;
+        ResultSet rs = helper.executeQuery(sql);
+        orders = readShortTermOrderData(rs);
+
+        helper.closeConnection();
+        return orders;
     }
 
-
+    private String BuildSqlString(ArrayList<String> ids) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        for (int i = 0; i < ids.size(); i++){
+            sb.append("'");
+            sb.append(ids.get(i));
+            sb.append("'");
+            if(i != ids.size() - 1){
+                sb.append(",");
+            }
+        }
+        sb.append(")");
+        return sb.toString();
+    }
 
 
 }
