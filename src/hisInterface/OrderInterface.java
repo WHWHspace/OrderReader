@@ -12,18 +12,6 @@ import java.util.Date;
  */
 public interface OrderInterface {
 
-//    //获取所有病人的长期医嘱
-//    public ArrayList<LongTermOrder> getAllLongTermOrder();
-//
-//    //获取指定病人的长期医嘱
-//    public ArrayList<LongTermOrder> getAllLongTermOrder(String id);
-//
-//    //获取所有病人的短期医嘱
-//    public ArrayList<ShortTermOrder> getAllShortTermOrder();
-//
-//    //获取指定病人的短期医嘱
-//    public ArrayList<ShortTermOrder> getAllShortTermOrder(String id);
-
     //获取所有病人某一段时间内新增的长期医嘱
     public ArrayList<LongTermOrder> getUpdatedLongTermOrder(Date fromDate,Date toDate);
 
