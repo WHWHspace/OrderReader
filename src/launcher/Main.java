@@ -36,6 +36,7 @@ public class Main {
     static OrderReader reader = new OrderReader(inter);
     static ReadOrderThread thread;
 
+
     public static void main(String args[]){
 
         readLastReadTime();
