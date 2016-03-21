@@ -20,7 +20,15 @@ import java.util.Date;
  */
 public class Main {
 
+    //    public static String url="jdbc:mysql://127.0.0.1:3306/hemodialysis?useUnicode=true&characterEncoding=UTF-8";
+//    public static String user = "root";
+//    public static String password = "123456";
+    public static String url="jdbc:mysql://127.0.0.1:3306/myhaisv4?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
+    public static String user = "root";
+    public static String password = "";
+
     public static Logger logger = Logger.getLogger(Main.class);
+    public static MysqlHelper mysqlHelper = new MysqlHelper(url,user,password);
     public static int INTERVAL = 10000;
 
     static Date lastReadTime;

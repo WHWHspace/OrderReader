@@ -38,11 +38,15 @@ public class OrderImplOf117Hospital implements OrderInterface{
 
     private OracleHelper helper;
 
-    MysqlHelper mysqlHelper;
+    public MysqlHelper mysqlHelper;
 
     public OrderImplOf117Hospital(){
         helper = new OracleHelper(url,user,password);
-        mysqlHelper = new MysqlHelper(OrderReader.url,OrderReader.user,OrderReader.password);
+        mysqlHelper = Main.mysqlHelper;
+    }
+
+    public void setMysqlHelper(MysqlHelper mysqlHelper){
+        this.mysqlHelper = mysqlHelper;
     }
 
 

@@ -53,7 +53,6 @@ public class OracleHelper {
     public void closeConnection(){
         try {
             connection.close();
-            connection = null;
         } catch (SQLException e) {
             logger.error(new Date() + " 关闭oracle数据库连接失败\n" + e);
         }

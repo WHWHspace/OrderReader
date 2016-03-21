@@ -18,18 +18,11 @@ import java.util.Date;
 public class OrderReader {
 
     private Logger logger = Main.logger;
-    MysqlHelper mysqlHelper;
+    public static MysqlHelper mysqlHelper;
     OrderInterface hisImpl;
-//    public static String url="jdbc:mysql://127.0.0.1:3306/hemodialysis?useUnicode=true&characterEncoding=UTF-8";
-//    public static String user = "root";
-//    public static String password = "123456";
-    public static String url="jdbc:mysql://127.0.0.1:3306/myhaisv4?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
-    public static String user = "root";
-    public static String password = "";
 
     public OrderReader(OrderInterface inter){
-        mysqlHelper = new MysqlHelper(url,user,password);
-
+        mysqlHelper = Main.mysqlHelper;
         hisImpl = inter;
     }
 
