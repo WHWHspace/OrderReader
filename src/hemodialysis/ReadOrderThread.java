@@ -34,10 +34,10 @@ public class ReadOrderThread extends Thread{
             Date currentDate = new Date();          //现在的时间
             writeLastReadTime(currentDate);
             logger.info(currentDate);
-//            reader.readNewAddedLongTermOrder(date,currentDate); //读取上一次到现在之间的数据
-//            reader.readNewAddedShortTermOrder(date,currentDate);
-            reader.readNewAddedLongTermOrderByIDs(date,currentDate);
-            reader.readNewAddedShortTermOrderByIDs(date,currentDate);
+            reader.readNewAddedLongTermOrder(date,currentDate); //读取上一次到现在之间的数据
+            reader.readNewAddedShortTermOrder(date,currentDate);
+//            reader.readNewAddedLongTermOrderByIDs(date,currentDate);
+//            reader.readNewAddedShortTermOrderByIDs(date,currentDate);
 
             date = currentDate;                     //跟新上一次读取的时间
             try {

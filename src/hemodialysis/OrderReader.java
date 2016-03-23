@@ -104,6 +104,7 @@ public class OrderReader {
      * @param orders
      */
     private void insertShortTermOrder(ArrayList<ShortTermOrder> orders) {
+        doSelect();
         if(orders == null){
             return;
         }
@@ -126,10 +127,21 @@ public class OrderReader {
     }
 
     /**
+     * 做一次查询，不做任何处理。防止过长时间不查询导致mysql收回连接
+     */
+    private void doSelect() {
+        mysqlHelper.getConnection();
+        String sql = "select * from pat_info where pif_id = 1";
+        mysqlHelper.executeQuery(sql);
+        mysqlHelper.closeConnection();
+    }
+
+    /**
      * 插入长期医嘱
      * @param orders
      */
     private void insertLongTermOrder(ArrayList<LongTermOrder> orders) {
+        doSelect();
         if(orders == null){
             return;
         }
@@ -149,8 +161,6 @@ public class OrderReader {
             }
             mysqlHelper.closeConnection();
         }
-
-
     }
 
 }
