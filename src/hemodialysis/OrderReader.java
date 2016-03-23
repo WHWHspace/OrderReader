@@ -26,8 +26,6 @@ public class OrderReader {
         hisImpl = inter;
     }
 
-
-
     /**
      * 读取某一段时间内新增的长期医嘱
      * @param fromDate
@@ -104,6 +102,7 @@ public class OrderReader {
      * @param orders
      */
     private void insertShortTermOrder(ArrayList<ShortTermOrder> orders) {
+        doSelect();
         if(orders == null){
             return;
         }
@@ -125,11 +124,19 @@ public class OrderReader {
         }
     }
 
+    private void doSelect() {
+        mysqlHelper.getConnection();
+        String sql = "Select * from pat_info where pif_id = 1";
+        mysqlHelper.executeQuery(sql);
+        mysqlHelper.closeConnection();
+    }
+
     /**
      * 插入长期医嘱
      * @param orders
      */
     private void insertLongTermOrder(ArrayList<LongTermOrder> orders) {
+        doSelect();
         if(orders == null){
             return;
         }
