@@ -42,13 +42,8 @@ public class OrderImplOf117Hospital implements OrderInterface{
 
     public OrderImplOf117Hospital(){
         helper = new OracleHelper(url,user,password);
-        mysqlHelper = Main.mysqlHelper;
+        mysqlHelper = new MysqlHelper(OrderReader.url,OrderReader.user,OrderReader.password);
     }
-
-    public void setMysqlHelper(MysqlHelper mysqlHelper){
-        this.mysqlHelper = mysqlHelper;
-    }
-
 
     /**
      * 解析longtermorder的resultSet
@@ -60,6 +55,7 @@ public class OrderImplOf117Hospital implements OrderInterface{
         if(rs == null){
             return orders;
         }
+        mysqlHelper = new MysqlHelper(OrderReader.url,OrderReader.user,OrderReader.password);
         mysqlHelper.getConnection();
         try {
             while(rs.next()){
@@ -124,6 +120,7 @@ public class OrderImplOf117Hospital implements OrderInterface{
                 o.setLgord_freq(rs.getString("lgord_freq"));
                 o.setLgord_medway(rs.getString("lgord_medway"));
 
+                System.out.println(o.getLgord_id());
                 orders.add(o);
             }
 
@@ -190,6 +187,7 @@ public class OrderImplOf117Hospital implements OrderInterface{
         if(rs == null){
             return orders;
         }
+        mysqlHelper = new MysqlHelper(OrderReader.url,OrderReader.user,OrderReader.password);
         mysqlHelper.getConnection();
         try {
             while(rs.next()){
@@ -200,6 +198,7 @@ public class OrderImplOf117Hospital implements OrderInterface{
                     continue;
                 }
                 o.setShord_patic(ic);
+                System.out.println(ic);
                 SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                 SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
@@ -268,6 +267,7 @@ public class OrderImplOf117Hospital implements OrderInterface{
 
     @Override
     public ArrayList<LongTermOrder> getUpdatedLongTermOrder(Date fromDate,Date toDate) {
+        helper = new OracleHelper(url,user,password);
         helper.getConnection();
         ArrayList<LongTermOrder> orders = new ArrayList<LongTermOrder>();
 
@@ -283,6 +283,7 @@ public class OrderImplOf117Hospital implements OrderInterface{
 
     @Override
     public ArrayList<ShortTermOrder> getUpdatedShortTermOrder(Date fromDate,Date toDate) {
+        helper = new OracleHelper(url,user,password);
         helper.getConnection();
         ArrayList<ShortTermOrder> orders = new ArrayList<ShortTermOrder>();
 
@@ -298,6 +299,7 @@ public class OrderImplOf117Hospital implements OrderInterface{
 
     @Override
     public ArrayList<LongTermOrder> getUpdatedLongTermOrder(Date fromDate, Date toDate, ArrayList<String> ids) {
+        helper = new OracleHelper(url,user,password);
         helper.getConnection();
         ArrayList<LongTermOrder> orders = new ArrayList<LongTermOrder>();
         if((ids == null)||(ids.size() == 0)){
@@ -322,6 +324,7 @@ public class OrderImplOf117Hospital implements OrderInterface{
 
     @Override
     public ArrayList<ShortTermOrder> getUpdatedShortTermOrder(Date fromDate, Date toDate, ArrayList<String> ids) {
+        helper = new OracleHelper(url,user,password);
         helper.getConnection();
         ArrayList<ShortTermOrder> orders = new ArrayList<ShortTermOrder>();
         if((ids == null)||(ids.size() == 0)){

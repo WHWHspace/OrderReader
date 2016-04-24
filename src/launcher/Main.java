@@ -3,6 +3,7 @@ package launcher;
 import db.MysqlHelper;
 import hemodialysis.OrderReader;
 import hemodialysis.ReadOrderThread;
+import hemodialysis.UpdateOutOfDateOrdersThread;
 import hisImpl.OrderImplOf117Hospital;
 import hisInterface.OrderInterface;
 import org.apache.log4j.Logger;
@@ -17,22 +18,16 @@ import java.util.Date;
  */
 public class Main {
 
-    //    public static String url="jdbc:mysql://127.0.0.1:3306/hemodialysis?useUnicode=true&characterEncoding=UTF-8";
-//    public static String user = "root";
-//    public static String password = "123456";
-    public static String url="jdbc:mysql://127.0.0.1:3306/myhaisv4?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
-    public static String user = "root";
-    public static String password = "";
+
 
     public static Logger logger = Logger.getLogger(Main.class);
-    public static MysqlHelper mysqlHelper = new MysqlHelper(url,user,password);
     public static int INTERVAL = 10000;
 
     static Date lastReadTime;
     static OrderInterface inter = new OrderImplOf117Hospital();
     static OrderReader reader = new OrderReader(inter);
     static ReadOrderThread thread;
-
+    static UpdateOutOfDateOrdersThread updateThread;
 
     public static void main(String args[]){
 
@@ -42,6 +37,10 @@ public class Main {
         logger.info(new Date() + " 开启线程任务");
         thread = new ReadOrderThread(lastReadTime,reader,INTERVAL);
         thread.start();
+
+        logger.info(new Date() + " 开启更新医嘱状态线程任务");
+        updateThread = new UpdateOutOfDateOrdersThread();
+        updateThread.start();
     }
 
     /**
