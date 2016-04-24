@@ -3,14 +3,12 @@ package launcher;
 import db.MysqlHelper;
 import hemodialysis.OrderReader;
 import hemodialysis.ReadOrderThread;
+import hemodialysis.UpdateOutOfDateOrdersThread;
 import hisImpl.OrderImplOf117Hospital;
 import hisInterface.OrderInterface;
 import org.apache.log4j.Logger;
 
-import javax.swing.*;
 import java.io.*;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,21 +18,16 @@ import java.util.Date;
  */
 public class Main {
 
-    //    public static String url="jdbc:mysql://127.0.0.1:3306/hemodialysis?useUnicode=true&characterEncoding=UTF-8";
-//    public static String user = "root";
-//    public static String password = "123456";
-    public static String url="jdbc:mysql://127.0.0.1:3306/myhaisv4?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
-    public static String user = "root";
-    public static String password = "";
+
 
     public static Logger logger = Logger.getLogger(Main.class);
-    public static MysqlHelper mysqlHelper = new MysqlHelper(url,user,password);
     public static int INTERVAL = 10000;
 
     static Date lastReadTime;
     static OrderInterface inter = new OrderImplOf117Hospital();
     static OrderReader reader = new OrderReader(inter);
     static ReadOrderThread thread;
+    static UpdateOutOfDateOrdersThread updateThread;
 
     public static void main(String args[]){
 
@@ -44,6 +37,10 @@ public class Main {
         logger.info(new Date() + " 开启线程任务");
         thread = new ReadOrderThread(lastReadTime,reader,INTERVAL);
         thread.start();
+
+        logger.info(new Date() + " 开启更新医嘱状态线程任务");
+        updateThread = new UpdateOutOfDateOrdersThread();
+        updateThread.start();
     }
 
     /**
@@ -61,10 +58,8 @@ public class Main {
             r.close();
         } catch (FileNotFoundException e) {
             logger.error(new Date() + " 未找到配置文件，请在config目录下添加interval.txt,设置读取时间间隔（以毫秒为单位）\n" + e);
-            showErrorMessage(" 未找到配置文件，请在config目录下添加interval.txt,设置读取时间间隔（以毫秒为单位）");
         } catch (IOException e) {
             logger.error(new Date() + " 读取时间间隔配置文件失败！\n" + e);
-            showErrorMessage("");
         }
     }
 
@@ -86,28 +81,12 @@ public class Main {
             logger.info(new Date() + " 读取上一次时间完成");
             r.close();
         } catch (FileNotFoundException e) {
-            logger.error(new Date() + " 未找到配置文件，请在config目录下添加lastReadTime.txt,设置上一次读取的时间。时间格式 2000-02-23 12:12:12\n"  + e);
-            showErrorMessage(" 未找到配置文件，请在config目录下添加lastReadTime.txt,设置上一次读取的时间。时间格式 2000-02-23 12:12:12\n");
+            logger.error(new Date() + " 未找到配置文件，请在config目录下添加lastReadTime.txt,设置上一次读取的时间。时间格式 2000-02-23 12:12:12\n" + e);
         } catch (IOException e) {
             logger.error(new Date() + " 读取上一次时间配置文件失败！\n" + e);
-            showErrorMessage("读取时间配置文件错误");
         } catch (ParseException e) {
             logger.error(new Date() + " 日期格式错误，解析错误\n" + e);
-            showErrorMessage("配置文件日期格式错误");
         }
 
     }
-
-    private static void showErrorMessage(String s){
-        if((s == null)||("".equals(s))){
-            s = "发生错误，请重启该应用";
-        }
-        JDialog errorDialog = new JDialog();
-        errorDialog.setTitle("发生错误");
-        errorDialog.setSize(300,100);
-        JLabel label = new JLabel(s);
-        errorDialog.add(label);
-        errorDialog.setVisible(true);
-    }
-
 }

@@ -17,14 +17,22 @@ import java.util.Date;
  */
 public class OrderReader {
 
+//        public static String url="jdbc:mysql://132.147.173.112:3306/myhaisv4?useUnicode=true&characterEncoding=UTF-8";
+//    public static String user = "root";
+//    public static String password = "";
+    public static String url="jdbc:mysql://127.0.0.1:3306/myhaisv4?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
+    public static String user = "root";
+    public static String password = "";
+
     private Logger logger = Main.logger;
-    public static MysqlHelper mysqlHelper;
+    MysqlHelper mysqlHelper;
     OrderInterface hisImpl;
 
     public OrderReader(OrderInterface inter){
-        mysqlHelper = Main.mysqlHelper;
         hisImpl = inter;
     }
+
+
 
     /**
      * 读取某一段时间内新增的长期医嘱
@@ -75,6 +83,7 @@ public class OrderReader {
      * @return
      */
     private ArrayList<String> getPatientIds() {
+        mysqlHelper = new MysqlHelper(url,user,password);
         mysqlHelper.getConnection();
 
         ArrayList<String> ids = new ArrayList<String>();
@@ -102,12 +111,14 @@ public class OrderReader {
      * @param orders
      */
     private void insertShortTermOrder(ArrayList<ShortTermOrder> orders) {
-        doSelect();
+//        doSelect();
         if(orders == null){
             return;
         }
         if(orders.size() > 0){
+            System.out.println(orders.size());
             logger.info(new Date() + " 添加" + orders.size() + "条短期医嘱数据");
+            mysqlHelper = new MysqlHelper(url,user,password);
             mysqlHelper.getConnection();
 
             for (int i = 0; i < orders.size(); i++){
@@ -124,9 +135,13 @@ public class OrderReader {
         }
     }
 
+    /**
+     * 做一次查询，不做任何处理。防止过长时间不查询导致mysql收回连接
+     */
     private void doSelect() {
+        mysqlHelper = new MysqlHelper(url,user,password);
         mysqlHelper.getConnection();
-        String sql = "Select * from pat_info where pif_id = 1";
+        String sql = "select * from pat_info where pif_id = 1";
         mysqlHelper.executeQuery(sql);
         mysqlHelper.closeConnection();
     }
@@ -136,12 +151,13 @@ public class OrderReader {
      * @param orders
      */
     private void insertLongTermOrder(ArrayList<LongTermOrder> orders) {
-        doSelect();
+//        doSelect();
         if(orders == null){
             return;
         }
         if(orders.size() > 0){
             logger.info(new Date() + " 添加" + orders.size() + "条长期医嘱数据");
+            mysqlHelper = new MysqlHelper(url,user,password);
             mysqlHelper.getConnection();
 
             for (int i = 0; i < orders.size(); i++){
@@ -156,8 +172,6 @@ public class OrderReader {
             }
             mysqlHelper.closeConnection();
         }
-
-
     }
 
 }
