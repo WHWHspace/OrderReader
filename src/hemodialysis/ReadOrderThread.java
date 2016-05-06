@@ -32,11 +32,11 @@ public class ReadOrderThread extends Thread{
     public void run() {
         while (!exit){
             Date currentDate = new Date();          //现在的时间
-            writeLastReadTime(currentDate);
+//            writeLastReadTime(currentDate);
             logger.info(currentDate);
 //            reader.readNewAddedLongTermOrder(date,currentDate); //读取上一次到现在之间的数据
 //            reader.readNewAddedShortTermOrder(date,currentDate);
-            reader.readNewAddedLongTermOrderByIDs(date,currentDate);
+//            reader.readNewAddedLongTermOrderByIDs(date,currentDate); //陕西武警医院没有长期医嘱
             reader.readNewAddedShortTermOrderByIDs(date,currentDate);
 
             date = currentDate;                     //跟新上一次读取的时间

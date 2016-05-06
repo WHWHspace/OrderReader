@@ -17,12 +17,12 @@ import java.util.Date;
  */
 public class OrderReader {
 
-//        public static String url="jdbc:mysql://132.147.173.112:3306/myhaisv4?useUnicode=true&characterEncoding=UTF-8";
+        public static String url="jdbc:mysql://127.0.0.1:3306/hemodialysis?useUnicode=true&characterEncoding=UTF-8";
+    public static String user = "root";
+    public static String password = "123456";
+//    public static String url="jdbc:mysql://127.0.0.1:3306/myhaisv4?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
 //    public static String user = "root";
 //    public static String password = "";
-    public static String url="jdbc:mysql://127.0.0.1:3306/myhaisv4?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
-    public static String user = "root";
-    public static String password = "";
 
     private Logger logger = Main.logger;
     MysqlHelper mysqlHelper;
@@ -34,37 +34,37 @@ public class OrderReader {
 
 
 
-    /**
-     * 读取某一段时间内新增的长期医嘱
-     * @param fromDate
-     * @param toDate
-     */
-    public void readNewAddedLongTermOrder(Date fromDate,Date toDate){
-        ArrayList<LongTermOrder> orders = hisImpl.getUpdatedLongTermOrder(fromDate, toDate);
-        insertLongTermOrder(orders);
-    }
-
-    /**
-     *读取某一段时间内新增的短期医嘱
-     * @param fromDate
-     * @param toDate
-     */
-    public void readNewAddedShortTermOrder(Date fromDate,Date toDate){
-        ArrayList<ShortTermOrder> orders = hisImpl.getUpdatedShortTermOrder(fromDate, toDate);
-        insertShortTermOrder(orders);
-    }
-
-    /**
-     * 根据病人id读取某一段时间内新增的长期医嘱
-     * @param fromDate
-     * @param toDate
-     */
-    public void readNewAddedLongTermOrderByIDs(Date fromDate,Date toDate){
-        ArrayList<String> ids = getPatientIds();
-
-        ArrayList<LongTermOrder> orders = hisImpl.getUpdatedLongTermOrder(fromDate, toDate, ids);
-        insertLongTermOrder(orders);
-    }
+//    /**
+//     * 读取某一段时间内新增的长期医嘱
+//     * @param fromDate
+//     * @param toDate
+//     */
+//    public void readNewAddedLongTermOrder(Date fromDate,Date toDate){
+////        ArrayList<LongTermOrder> orders = hisImpl.getUpdatedLongTermOrder(fromDate, toDate);
+////        insertLongTermOrder(orders);
+//    }
+//
+//    /**
+//     *读取某一段时间内新增的短期医嘱
+//     * @param fromDate
+//     * @param toDate
+//     */
+//    public void readNewAddedShortTermOrder(Date fromDate,Date toDate){
+////        ArrayList<ShortTermOrder> orders = hisImpl.getUpdatedShortTermOrder(fromDate, toDate);
+////        insertShortTermOrder(orders);
+//    }
+//
+//    /**
+//     * 根据病人id读取某一段时间内新增的长期医嘱
+//     * @param fromDate
+//     * @param toDate
+//     */
+//    public void readNewAddedLongTermOrderByIDs(Date fromDate,Date toDate){
+////        ArrayList<String> ids = getPatientIds();
+////
+////        ArrayList<LongTermOrder> orders = hisImpl.getUpdatedLongTermOrder(fromDate, toDate, ids);
+////        insertLongTermOrder(orders);
+//    }
 
     /**
      * 根据病人id读取某一段时间内新增的短期医嘱
@@ -87,7 +87,7 @@ public class OrderReader {
         mysqlHelper.getConnection();
 
         ArrayList<String> ids = new ArrayList<String>();
-        String sql = "SELECT pif_insid FROM pat_info";
+        String sql = "SELECT pif_mrn FROM pat_info";
         ResultSet rs = mysqlHelper.executeQuery(sql);
         if(rs == null){
             mysqlHelper.closeConnection();
@@ -95,7 +95,9 @@ public class OrderReader {
         }
         try {
             while(rs.next()){
-                ids.add(rs.getString("pif_insid"));
+                if(rs.getString("pif_mrn") != null){
+                    ids.add(rs.getString("pif_mrn"));
+                }
             }
         } catch (SQLException e) {
             logger.error(new Date() + "读取所有病人id失败" + e);
@@ -111,7 +113,6 @@ public class OrderReader {
      * @param orders
      */
     private void insertShortTermOrder(ArrayList<ShortTermOrder> orders) {
-//        doSelect();
         if(orders == null){
             return;
         }
@@ -135,43 +136,32 @@ public class OrderReader {
         }
     }
 
-    /**
-     * 做一次查询，不做任何处理。防止过长时间不查询导致mysql收回连接
-     */
-    private void doSelect() {
-        mysqlHelper = new MysqlHelper(url,user,password);
-        mysqlHelper.getConnection();
-        String sql = "select * from pat_info where pif_id = 1";
-        mysqlHelper.executeQuery(sql);
-        mysqlHelper.closeConnection();
-    }
 
-    /**
-     * 插入长期医嘱
-     * @param orders
-     */
-    private void insertLongTermOrder(ArrayList<LongTermOrder> orders) {
-//        doSelect();
-        if(orders == null){
-            return;
-        }
-        if(orders.size() > 0){
-            logger.info(new Date() + " 添加" + orders.size() + "条长期医嘱数据");
-            mysqlHelper = new MysqlHelper(url,user,password);
-            mysqlHelper.getConnection();
-
-            for (int i = 0; i < orders.size(); i++){
-                LongTermOrder order = orders.get(i);
-                String sql = "INSERT INTO `longterm_ordermgt` (`lgord_patic`, `lgord_dateord`, `lgord_timeord`, `lgord_usr1`, `lgord_drug`," +
-                        " `lgord_actst`, `lgord_dtactst`, `lgord_usr2`, `lgord_comment`," +
-                        " `lgord_intake`, `lgord_freq`, `lgord_medway`) VALUES " +
-                        "('" + order.getLgord_patic() + "', '" + order.getLgord_dateord() + "', '" + order.getLgord_timeord() + "', '" + order.getLgord_usr1() + "', '" + order.getLgord_drug() + "'," +
-                        " '" + order.getLgord_actst() + "', '" + order.getLgord_dtactst() + "', '" + order.getLgord_usr2() + "', '" + order.getLgord_comment() + "'," +
-                        " '" + order.getLgord_intake() + "', '" + order.getLgord_freq() + "', '" + order.getLgord_medway() + "');";
-                mysqlHelper.executeUpdate(sql);
-            }
-            mysqlHelper.closeConnection();
-        }
-    }
+//    /**
+//     * 插入长期医嘱
+//     * @param orders
+//     */
+//    private void insertLongTermOrder(ArrayList<LongTermOrder> orders) {
+//        if(orders == null){
+//            return;
+//        }
+//        if(orders.size() > 0){
+//            logger.info(new Date() + " 添加" + orders.size() + "条长期医嘱数据");
+//            mysqlHelper = new MysqlHelper(url,user,password);
+//            mysqlHelper.getConnection();
+//
+//            for (int i = 0; i < orders.size(); i++){
+//                LongTermOrder order = orders.get(i);
+//                String sql = "INSERT INTO `longterm_ordermgt` (`lgord_patic`, `lgord_dateord`, `lgord_timeord`, `lgord_usr1`, `lgord_drug`," +
+//                        " `lgord_actst`, `lgord_dtactst`, `lgord_usr2`, `lgord_comment`," +
+//                        " `lgord_intake`, `lgord_freq`, `lgord_medway`) VALUES " +
+//                        "('" + order.getLgord_patic() + "', '" + order.getLgord_dateord() + "', '" + order.getLgord_timeord() + "', '" + order.getLgord_usr1() + "', '" + order.getLgord_drug() + "'," +
+//                        " '" + order.getLgord_actst() + "', '" + order.getLgord_dtactst() + "', '" + order.getLgord_usr2() + "', '" + order.getLgord_comment() + "'," +
+//                        " '" + order.getLgord_intake() + "', '" + order.getLgord_freq() + "', '" + order.getLgord_medway() + "');";
+//                mysqlHelper.executeUpdate(sql);
+//            }
+//            mysqlHelper.closeConnection();
+//        }
+//    }
 
 }
