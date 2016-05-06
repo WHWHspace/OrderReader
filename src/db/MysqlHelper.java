@@ -8,14 +8,9 @@ import java.util.Date;
 
 /**
  * Created by 31344 on 2016/2/24.
- * 连接血透数据库，mysql
+ * 连接mysql数据库
  */
-public class MysqlHelper {
-    private Logger logger = Main.logger;
-    private Connection connection;
-    String url;
-    String user;
-    String password;
+public class MysqlHelper extends DBHelper{
 
     public MysqlHelper(String url,String user,String password){
         this.url = url;
@@ -39,6 +34,7 @@ public class MysqlHelper {
             } catch (SQLException e) {
                 logger.error(new Date() + " 建立mysql连接失败\n" + e);
             }
+            //判断是否已经建立连接，如果没有，等待一秒后继续尝试
             if(connection == null){
                 logger.error(new Date() + " 建立mysql连接失败,继续连接中...\n");
                 try {
@@ -47,48 +43,6 @@ public class MysqlHelper {
                     e.printStackTrace();
                 }
             }
-        }
-    }
-
-    /**
-     * 执行更新，插入语句
-     * @param sql
-     */
-    public void executeUpdate(String sql){
-        Statement s = null;
-        try {
-            s = connection.createStatement();
-            int result = s.executeUpdate(sql);
-        } catch (SQLException e) {
-            logger.error(new Date() + " 执行mysql更新错误\n" + e);
-        }
-    }
-
-    /**
-     * 执行查询语句
-     * @param sql
-     */
-    public ResultSet executeQuery(String sql){
-        Statement s = null;
-        ResultSet rs = null;
-        try {
-            s = connection.createStatement();
-            rs = s.executeQuery(sql);
-            return rs;
-        } catch (SQLException e) {
-            logger.error(new Date() + " 执行mysql查询错误\n" + e);
-        }
-        return null;
-    }
-
-    /**
-     * 关闭连接
-     */
-    public void closeConnection(){
-        try {
-            connection.close();
-        } catch (SQLException e) {
-            logger.error(new Date() + " 关闭mysql连接失败\n" + e);
         }
     }
 
