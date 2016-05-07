@@ -34,11 +34,9 @@ public class OrderImpl implements OrderInterface{
     private static final String password = "123456";
 
     private OracleHelper helper;
-//    private MysqlHelper mysqlHelper;
 
     public OrderImpl(){
         helper = new OracleHelper(url,user,password);
-//        mysqlHelper = new MysqlHelper(OrderReader.url,OrderReader.user,OrderReader.password);
     }
 
     /**
