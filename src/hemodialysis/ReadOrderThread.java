@@ -12,34 +12,38 @@ import java.util.Date;
 
 /**
  * Created by 31344 on 2016/2/26.
+ * 读取医嘱线程
  */
 public class ReadOrderThread extends Thread{
 
     public volatile boolean exit = false;
     private static Logger logger = Main.logger;
 
-    Date date;
-    OrderReader reader;
-    int interval;
+    private Date lastDate;              //记录上一次读取医嘱的时间
+    private OrderReader reader;
+    private int interval;
 
     public ReadOrderThread(Date date,OrderReader reader,int interval){
-        this.date = date;
+        this.lastDate = date;
         this.reader = reader;
         this.interval = interval;
     }
 
+
+    /**
+     * 每隔一段时间读取一次医嘱数据
+     */
     @Override
     public void run() {
         while (!exit){
             Date currentDate = new Date();          //现在的时间
             writeLastReadTime(currentDate);
             logger.info(currentDate);
-//            reader.readNewAddedLongTermOrder(date,currentDate); //读取上一次到现在之间的数据
-//            reader.readNewAddedShortTermOrder(date,currentDate);
-            reader.readNewAddedLongTermOrderByIDs(date,currentDate);
-            reader.readNewAddedShortTermOrderByIDs(date,currentDate);
+            //读取上一次时间到现在这段时间内新增的医嘱
+            reader.readNewAddedLongTermOrderByIDs(lastDate,currentDate);
+            reader.readNewAddedShortTermOrderByIDs(lastDate,currentDate);
 
-            date = currentDate;                     //跟新上一次读取的时间
+            lastDate = currentDate;                     //更新上一次读取的时间
             try {
                 Thread.sleep(interval);
             } catch (InterruptedException e) {
@@ -48,6 +52,10 @@ public class ReadOrderThread extends Thread{
         }
     }
 
+    /**
+     * 把上一次读取医嘱的时间保存到文件中
+     * @param currentDate
+     */
     private void writeLastReadTime(Date currentDate) {
         try {
             String path = System.getProperty("user.dir");

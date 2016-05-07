@@ -17,7 +17,7 @@ public class DBHelper {
     String password;
 
     /**
-     * ½¨Á¢Êı¾İ¿âÁ¬½Ó
+     * å»ºç«‹æ•°æ®åº“è¿æ¥
      */
     public void getConnection(){
 
@@ -25,7 +25,7 @@ public class DBHelper {
 
 
     /**
-     * Ö´ĞĞ²éÑ¯Óï¾ä
+     * æ‰§è¡ŒæŸ¥è¯¢è¯­å¥
      * @param sql
      */
     public ResultSet executeQuery(String sql){
@@ -36,35 +36,37 @@ public class DBHelper {
             rs = s.executeQuery(sql);
             return rs;
         } catch (SQLException e) {
-            logger.error(new Date() + " Ö´ĞĞÊı¾İ¿â²éÑ¯´íÎó\n" + e);
+            logger.error(new Date() + " æ‰§è¡Œæ•°æ®åº“æŸ¥è¯¢é”™è¯¯\n" + e);
         }
         return null;
     }
 
 
     /**
-     * Ö´ĞĞ¸üĞÂ£¬²åÈëÓï¾ä
+     * æ‰§è¡Œæ›´æ–°ï¼Œæ’å…¥è¯­å¥
      * @param sql
      */
-    public void executeUpdate(String sql){
+    public int executeUpdate(String sql){
         Statement s = null;
+        int result = 0;
         try {
             s = connection.createStatement();
-            int result = s.executeUpdate(sql);
+            result = s.executeUpdate(sql);
         } catch (SQLException e) {
-            logger.error(new Date() + " Ö´ĞĞÊı¾İ¿â¸üĞÂ´íÎó\n" + e);
+            logger.error(new Date() + " æ‰§è¡Œæ•°æ®åº“æ›´æ–°é”™è¯¯\n" + e);
         }
+        return result;
     }
 
 
     /**
-     * ¹Ø±ÕÁ¬½Ó
+     * å…³é—­è¿æ¥
      */
     public void closeConnection(){
         try {
             connection.close();
         } catch (SQLException e) {
-            logger.error(new Date() + " ¹Ø±ÕÊı¾İ¿âÁ¬½ÓÊ§°Ü\n" + e);
+            logger.error(new Date() + " å…³é—­æ•°æ®åº“è¿æ¥å¤±è´¥\n" + e);
         }
     }
 }

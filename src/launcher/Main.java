@@ -1,10 +1,9 @@
 package launcher;
 
-import db.MysqlHelper;
 import hemodialysis.OrderReader;
 import hemodialysis.ReadOrderThread;
 import hemodialysis.UpdateOutOfDateOrdersThread;
-import hisImpl.OrderImplOf117Hospital;
+import hisImpl.OrderImpl;
 import hisInterface.OrderInterface;
 import org.apache.log4j.Logger;
 
@@ -24,7 +23,7 @@ public class Main {
     public static int INTERVAL = 10000;
 
     static Date lastReadTime;
-    static OrderInterface inter = new OrderImplOf117Hospital();
+    static OrderInterface inter = new OrderImpl();
     static OrderReader reader = new OrderReader(inter);
     static ReadOrderThread thread;
     static UpdateOutOfDateOrdersThread updateThread;
