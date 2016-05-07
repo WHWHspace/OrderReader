@@ -9,6 +9,7 @@ import model.ShortTermOrder;
 import db.OracleHelper;
 import hisInterface.OrderInterface;
 import org.apache.log4j.Logger;
+import util.DialysisDataTool;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,25 +20,25 @@ import java.util.Date;
 
 /**
  * Created by 31344 on 2016/2/24.
- * 医嘱接口实现(本地)
+ * 医嘱接口实现(本地数据库)
  */
 public class OrderImpl implements OrderInterface{
     private Logger logger = Main.logger;
 
-    //视图名称
+    //建立的医嘱视图名称
     private static final String LongTermOrderViewName = "longterm_order";
     private static final String ShortTermOrderViewName = "shortterm_order";
-    //his数据库连接参数
+    //his数据库连接参数，oracle,test,123456
     private static final String url = "jdbc:oracle:thin:@127.0.0.1:1521:orcl";
     private static final String user = "test";
     private static final String password = "123456";
 
     private OracleHelper helper;
-    public MysqlHelper mysqlHelper;
+//    private MysqlHelper mysqlHelper;
 
     public OrderImpl(){
         helper = new OracleHelper(url,user,password);
-        mysqlHelper = new MysqlHelper(OrderReader.url,OrderReader.user,OrderReader.password);
+//        mysqlHelper = new MysqlHelper(OrderReader.url,OrderReader.user,OrderReader.password);
     }
 
     /**
@@ -50,38 +51,46 @@ public class OrderImpl implements OrderInterface{
         if(rs == null){
             return orders;
         }
-        mysqlHelper = new MysqlHelper(OrderReader.url,OrderReader.user,OrderReader.password);
-        mysqlHelper.getConnection();
         try {
             while(rs.next()){
                 LongTermOrder o = new LongTermOrder();
+                //读取his的病人id
                 String patientID = rs.getString("lgord_patic");
-                String ic = getPatientIC(patientID);
+                //his的病人id记录在血透数据库中pat_info的pif_insid(原来用作医保号，现在用来记录病人his的id号)，建立病人资料的时候输入
+                //因为血透中使用身份证号来对应病人的医嘱，所以需要先读取病人的身份证号，保存到医嘱表的lgord_patic
+                String ic = DialysisDataTool.getPatientIC(patientID);
+                //找不到身份证，废弃
                 if(ic == null){
                     continue;
                 }
                 o.setLgord_patic(ic);
-                System.out.println(ic);
+
+                //一般his数据库记录的时间是yyyy-MM-dd HH:mm:ss的格式
+                //但是血透数据库用lgord_dateord记录年月日:yyyy/MM/dd,用lgord_timeord记录时分秒:HH:mm:ss
+                //这里对读取的时间进行格式转换
                 SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                 SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
                 try {
                     Date date;
+                    //有开始日期
                     if(rs.getString("start_date_time") != null){
                         date = readFormat.parse(rs.getString("start_date_time"));
+                        o.setLgord_dateord(dateFormat.format(date));
+                        o.setLgord_timeord(timeFormat.format(date));
                     }
-                    else {
-                        date = new Date();
+                    //没有开始日期，可以认为这条医嘱是没用的
+                    else{
+                        continue;
                     }
-                    o.setLgord_dateord(dateFormat.format(date));
-                    o.setLgord_timeord(timeFormat.format(date));
                 } catch (ParseException e) {
                     logger.error(new Date() + " 解析开始日期错误\n" + e);
                     e.printStackTrace();
                 }
-                o.setLgord_usr1(rs.getString("lgord_usr1"));
+
+                o.setLgord_usr1(rs.getString("lgord_usr1"));                //医生
                 String drugName = rs.getString("lgord_drug");
-                o.setLgord_drug(getDrugId(drugName));
+                o.setLgord_drug(DialysisDataTool.getDrugId(drugName));      //药品id
                 //1，新开。2，执行。3，停止。4，作废。
                 if ("1".equals(rs.getString("order_status")) || "2".equals(rs.getString("order_status"))){
                     o.setLgord_actst(OrderStatus.USE);
@@ -93,12 +102,7 @@ public class OrderImpl implements OrderInterface{
                     if (rs.getString("stop_date_time") != null){
                         Date stopDate = readFormat.parse(rs.getString("stop_date_time"));
                         o.setLgord_dtactst(dateFormat.format(stopDate));
-                        if((stopDate.after(new Date()))||dateFormat.format(stopDate).equals(dateFormat.format(new Date()))){
-                            o.setLgord_actst(OrderStatus.USE);
-                        }
-                        else{
-                            o.setLgord_actst(OrderStatus.NOTUSE);
-                        }
+                        //这里只需要把停止时间记录下来就可以，至于判断医嘱是否过期，交给更新医嘱状态的线程去处理
                     }
                     else {
                         o.setLgord_dtactst("");
@@ -107,70 +111,23 @@ public class OrderImpl implements OrderInterface{
                     logger.error(new Date() + " 解析停止日期错误\n" + e);
                     e.printStackTrace();
                 }
-                o.setLgord_usr2(rs.getString("nurse"));
-                o.setLgord_comment(rs.getString("lgord_comment"));
+                o.setLgord_usr2(rs.getString("nurse"));             //护士
+                o.setLgord_comment(rs.getString("lgord_comment"));  //备注
                 String dosage = ((rs.getString("dosage")==null)?"":rs.getString("dosage"));
                 String dosage_units = ((rs.getString("dosage_units")==null)?"":rs.getString("dosage_units"));
-                o.setLgord_intake(dosage + dosage_units);
-                o.setLgord_freq(rs.getString("lgord_freq"));
-                o.setLgord_medway(rs.getString("lgord_medway"));
+                o.setLgord_intake(dosage + dosage_units);           //剂量
+                o.setLgord_freq(rs.getString("lgord_freq"));        //频率
+                o.setLgord_medway(rs.getString("lgord_medway"));    //用药方式
 
-                System.out.println(o.getLgord_id());
                 orders.add(o);
             }
-
             return orders;
         } catch (SQLException e) {
             logger.error(new Date() + " 读取查询到的医嘱结果错误\n" + e);
             e.printStackTrace();
         }
-        mysqlHelper.closeConnection();
         return orders;
     }
-
-    private String getDrugId(String drugName) {
-        String id = "";
-        if(drugName == null){
-            return id;
-        }
-        else{
-            String sql = "select drg_code from drug_list where drg_name = '" + drugName +"'";
-            ResultSet rs = mysqlHelper.executeQuery(sql);
-            if(rs == null){
-                return id;
-            }
-            try {
-                if(rs.next()){
-                    id = rs.getString("drg_code");
-                }
-            } catch (SQLException e) {
-                logger.error(new Date() + "获取药品id错误\n" + e);
-                e.printStackTrace();
-                return "";
-            }
-        }
-        return id;
-    }
-
-    private String getPatientIC(String patientID) {
-
-        String patientIC = null;
-        String sql = "SELECT pif_ic FROM pat_info where pif_insid = '" + patientID +"';";
-        ResultSet rs = mysqlHelper.executeQuery(sql);
-        if(rs == null){
-            return patientIC;
-        }
-        try {
-            if(rs.next()){
-                patientIC = rs.getString("pif_ic");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return patientIC;
-    }
-
 
     /**
      * 解析shorttermorder的resultSet
@@ -182,38 +139,45 @@ public class OrderImpl implements OrderInterface{
         if(rs == null){
             return orders;
         }
-        mysqlHelper = new MysqlHelper(OrderReader.url,OrderReader.user,OrderReader.password);
-        mysqlHelper.getConnection();
         try {
             while(rs.next()){
                 ShortTermOrder o = new ShortTermOrder();
+                //读取his的病人id
                 String patientID = rs.getString("shord_patic");
-                String ic = getPatientIC(patientID);
+                //his的病人id记录在血透数据库中pat_info的pif_insid(原来用作医保号，现在用来记录病人his的id号)，建立病人资料的时候输入
+                //因为血透中使用身份证号来对应病人的医嘱，所以需要先读取病人的身份证号，保存到医嘱表的shord_patic
+                String ic = DialysisDataTool.getPatientIC(patientID);
+                //找不到身份证，废弃
                 if(ic == null){
                     continue;
                 }
                 o.setShord_patic(ic);
-                System.out.println(ic);
+
+                //一般his数据库记录的时间是yyyy-MM-dd HH:mm:ss的格式
+                //但是血透数据库用shord_dateord记录年月日:yyyy/MM/dd,用shord_timeord记录时分秒:HH:mm:ss
+                //这里对读取的时间进行格式转换
                 SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                 SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
                 try {
                     Date date;
+                    //有开始日期
                     if(rs.getString("start_date_time") != null){
                         date = readFormat.parse(rs.getString("start_date_time"));
+                        o.setShord_dateord(dateFormat.format(date));
+                        o.setShord_timeord(timeFormat.format(date));
                     }
-                    else {
-                        date = new Date();
+                    //没有开始日期，可以认为这条医嘱是没用的
+                    else{
+                        continue;
                     }
-                    o.setShord_dateord(dateFormat.format(date));
-                    o.setShord_timeord(timeFormat.format(date));
                 } catch (ParseException e) {
                     logger.error(new Date() + " 解析开始日期错误\n" + e);
                     e.printStackTrace();
                 }
-                o.setShord_usr1(rs.getString("shord_usr1"));
+                o.setShord_usr1(rs.getString("shord_usr1"));        //医生
                 String drugName = rs.getString("shord_drug");
-                o.setShord_drug(getDrugId(drugName));
+                o.setShord_drug(DialysisDataTool.getDrugId(drugName));  //药品代号
                 //1，新开。2，执行。3，停止。4，作废。
                 if ("1".equals(rs.getString("order_status")) || "2".equals(rs.getString("order_status"))){
                     o.setShord_actst(OrderStatus.USE);
@@ -225,12 +189,7 @@ public class OrderImpl implements OrderInterface{
                     if (rs.getString("stop_date_time") != null){
                         Date stopDate = readFormat.parse(rs.getString("stop_date_time"));
                         o.setShord_dtactst(dateFormat.format(stopDate));
-                        if((stopDate.after(new Date()))||dateFormat.format(stopDate).equals(dateFormat.format(new Date()))){
-                            o.setShord_actst(OrderStatus.USE);
-                        }
-                        else{
-                            o.setShord_actst(OrderStatus.NOTUSE);
-                        }
+                        //这里只需要把停止时间记录下来就可以，至于判断医嘱是否过期，交给更新医嘱状态的线程去处理
                     }
                     else {
                         o.setShord_dtactst("");
@@ -239,13 +198,13 @@ public class OrderImpl implements OrderInterface{
                     logger.error(new Date() + " 解析停用日期错误\n" + e);
                     e.printStackTrace();
                 }
-                o.setShord_usr2(rs.getString("nurse"));
-                o.setShord_comment(rs.getString("shord_comment"));
+                o.setShord_usr2(rs.getString("nurse"));             //护士
+                o.setShord_comment(rs.getString("shord_comment"));  //备注
                 String dosage = ((rs.getString("dosage")==null)?"":rs.getString("dosage"));
                 String dosage_units = ((rs.getString("dosage_units")==null)?"":rs.getString("dosage_units"));
-                o.setShord_intake(dosage + dosage_units);
-                o.setShord_freq(rs.getString("shord_freq"));
-                o.setShord_medway(rs.getString("shord_medway"));
+                o.setShord_intake(dosage + dosage_units);           //剂量
+                o.setShord_freq(rs.getString("shord_freq"));        //频率
+                o.setShord_medway(rs.getString("shord_medway"));    //用药方式
 
                 orders.add(o);
             }
@@ -255,57 +214,56 @@ public class OrderImpl implements OrderInterface{
             logger.error(new Date() + " 读取查询数据错误\n" + e);
             e.printStackTrace();
         }
-        mysqlHelper.closeConnection();
         return orders;
     }
 
 
+    /**
+     * 获取所有病人某一段时间内新增的长期医嘱
+     * @param fromDate
+     * @param toDate
+     * @return
+     */
     @Override
     public ArrayList<LongTermOrder> getUpdatedLongTermOrder(Date fromDate,Date toDate) {
-        helper = new OracleHelper(url,user,password);
-        helper.getConnection();
-        ArrayList<LongTermOrder> orders = new ArrayList<LongTermOrder>();
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String sql = "SELECT * from \""+ LongTermOrderViewName +"\" WHERE \"ENTER_DATE_TIME\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"ENTER_DATE_TIME\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
-//        String sql = "SELECT * from \""+ LongTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"enter_date_time\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
-        ResultSet rs = helper.executeQuery(sql);
-        orders = readLongTermOrderData(rs);
-
-        helper.closeConnection();
-        return orders;
+        return null;
     }
 
+    /**
+     * 获取所有病人某一段时间内新增的短期医嘱
+     * @param fromDate
+     * @param toDate
+     * @return
+     */
     @Override
     public ArrayList<ShortTermOrder> getUpdatedShortTermOrder(Date fromDate,Date toDate) {
-        helper = new OracleHelper(url,user,password);
-        helper.getConnection();
-        ArrayList<ShortTermOrder> orders = new ArrayList<ShortTermOrder>();
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\" WHERE \"ENTER_DATE_TIME\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"ENTER_DATE_TIME\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
-//        String sql = "SELECT * from \""+ ShortTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"enter_date_time\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')";
-        ResultSet rs = helper.executeQuery(sql);
-        orders = readShortTermOrderData(rs);
-
-        helper.closeConnection();
-        return orders;
+        return null;
     }
 
+    /**
+     * 根据病人id获取某一段时间内新增的长期医嘱
+     * @param fromDate
+     * @param toDate
+     * @param ids
+     * @return
+     */
     @Override
     public ArrayList<LongTermOrder> getUpdatedLongTermOrder(Date fromDate, Date toDate, ArrayList<String> ids) {
+        //建立数据库连接
         helper = new OracleHelper(url,user,password);
         helper.getConnection();
+        //获取id的sql语句
         ArrayList<LongTermOrder> orders = new ArrayList<LongTermOrder>();
         if((ids == null)||(ids.size() == 0)){
             return orders;
         }
         String idsSql = "";
-        idsSql = buildSqlString(ids);
-
+        idsSql = DialysisDataTool.buildSqlString(ids);
+        //拼接sql语句
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String sql = "SELECT * from \""+ LongTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"enter_date_time\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss') " +
                 "and \"lgord_patic\" in " + idsSql;
+
         ResultSet rs = helper.executeQuery(sql);
         orders = readLongTermOrderData(rs);
 
@@ -313,17 +271,26 @@ public class OrderImpl implements OrderInterface{
         return orders;
     }
 
+    /**
+     * 根据病人id获取某一段时间内新增的短期医嘱
+     * @param fromDate
+     * @param toDate
+     * @param ids
+     * @return
+     */
     @Override
     public ArrayList<ShortTermOrder> getUpdatedShortTermOrder(Date fromDate, Date toDate, ArrayList<String> ids) {
+        //建立数据库连接
         helper = new OracleHelper(url,user,password);
         helper.getConnection();
+        //获取id的sql语句
         ArrayList<ShortTermOrder> orders = new ArrayList<ShortTermOrder>();
         if((ids == null)||(ids.size() == 0)){
             return orders;
         }
         String idsSql = "";
-        idsSql = buildSqlString(ids);
-
+        idsSql = DialysisDataTool.buildSqlString(ids);
+        //拼接sql语句
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String sql = "SELECT * from \""+ ShortTermOrderViewName +"\" WHERE \"enter_date_time\" > to_date('"+ dateFormat.format(fromDate) +"', 'yyyy-mm-dd hh24:mi:ss') and \"enter_date_time\" <= to_date('"+ dateFormat.format(toDate) +"', 'yyyy-mm-dd hh24:mi:ss')" +
                 "and \"shord_patic\" in " + idsSql;
@@ -333,21 +300,4 @@ public class OrderImpl implements OrderInterface{
         helper.closeConnection();
         return orders;
     }
-
-    private String buildSqlString(ArrayList<String> ids) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("(");
-        for (int i = 0; i < ids.size(); i++){
-            sb.append("'");
-            sb.append(ids.get(i));
-            sb.append("'");
-            if(i != ids.size() - 1){
-                sb.append(",");
-            }
-        }
-        sb.append(")");
-        return sb.toString();
-    }
-
-
 }

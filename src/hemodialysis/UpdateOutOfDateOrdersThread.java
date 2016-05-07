@@ -7,13 +7,14 @@ import java.util.Date;
 
 /**
  * Created by 31344 on 2016/3/31.
+ * 更新医嘱状态线程
  */
 public class UpdateOutOfDateOrdersThread extends Thread{
 
     public volatile boolean exit = false;
     private static Logger logger = Main.logger;
-    OrderStatusManager manager;
-    int interval = 10000;
+    private OrderStatusManager manager;
+    private int interval = 360000;   //时间间隔
 
     public UpdateOutOfDateOrdersThread(){
         manager = new OrderStatusManager();
@@ -23,7 +24,6 @@ public class UpdateOutOfDateOrdersThread extends Thread{
     public void run() {
         while (!exit){
             manager.updateOrderStatus();
-
             try {
                 Thread.sleep(interval);
             } catch (InterruptedException e) {

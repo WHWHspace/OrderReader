@@ -5,6 +5,7 @@ import launcher.Main;
 
 /**
  * Created by 31344 on 2016/3/31.
+ * 实时更新医嘱状态，把过期的医嘱禁用
  */
 public class OrderStatusManager {
 
@@ -16,6 +17,9 @@ public class OrderStatusManager {
         updateShortTermOrderStatus();
     }
 
+    /**
+     * 判断是否有短期医嘱正在使用，但是停止时间在今天之前
+     */
     private void updateShortTermOrderStatus() {
         MysqlHelper helper = new MysqlHelper(OrderReader.url,OrderReader.user,OrderReader.password);
         helper.getConnection();
@@ -28,6 +32,9 @@ public class OrderStatusManager {
         helper.closeConnection();
     }
 
+    /**
+     * 判断是否有长期医嘱正在使用，但是停止时间在今天之前
+     */
     private void updateLongTermOrderStatus() {
         MysqlHelper helper = new MysqlHelper(OrderReader.url,OrderReader.user,OrderReader.password);
         helper.getConnection();

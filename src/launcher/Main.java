@@ -17,23 +17,24 @@ import java.util.Date;
  */
 public class Main {
 
-
-
     public static Logger logger = Logger.getLogger(Main.class);
-    public static int INTERVAL = 10000;
+    public static int INTERVAL = 10000;             //默认间隔10秒，实际需要从配置文件读取
 
-    static Date lastReadTime;
-    static OrderInterface inter = new OrderImpl();
-    static OrderReader reader = new OrderReader(inter);
-    static ReadOrderThread thread;
-    static UpdateOutOfDateOrdersThread updateThread;
+    private Date lastReadTime;
+    private OrderReader reader;
+    private ReadOrderThread thread;
+    private UpdateOutOfDateOrdersThread updateThread;
 
     public static void main(String args[]){
+        new Main().launch();
+    }
 
+    private void launch() {
         readLastReadTime();
         readInterval();
+        reader = new OrderReader();
 
-        logger.info(new Date() + " 开启线程任务");
+        logger.info(new Date() + " 开启读取医嘱线程任务");
         thread = new ReadOrderThread(lastReadTime,reader,INTERVAL);
         thread.start();
 
@@ -45,7 +46,7 @@ public class Main {
     /**
      * 读取时间间隔
      */
-    private static void readInterval() {
+    private void readInterval() {
         try {
             String path = System.getProperty("user.dir");
             BufferedReader r = new BufferedReader(new FileReader(new File(path + "/config/interval.txt")));
@@ -66,7 +67,7 @@ public class Main {
      * 读取上一次读取数据的时间
      * 如果设置上一次时间为很早以前，就是读取所有的数据，建议第一次运行的时候设置
      */
-    private static void readLastReadTime() {
+    private void readLastReadTime() {
         try {
             String path = System.getProperty("user.dir");
             BufferedReader r = new BufferedReader(new FileReader(new File(path + "/config/lastReadTime.txt")));

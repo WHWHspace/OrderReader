@@ -1,5 +1,6 @@
 package hemodialysis;
 
+import hisImpl.OrderImpl;
 import launcher.Main;
 import model.LongTermOrder;
 import model.ShortTermOrder;
@@ -26,8 +27,8 @@ public class OrderReader {
     private MysqlHelper mysqlHelper;
     private OrderInterface hisImpl;
 
-    public OrderReader(OrderInterface inter){
-        hisImpl = inter;
+    public OrderReader(){
+        hisImpl = new OrderImpl();
     }
 
 
