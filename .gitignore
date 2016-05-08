@@ -6,4 +6,7 @@
 *.iml
 out
 logs
+.classpath
+.project
+bin
 # Created by .ignore support plugin (hsz.mobi)
