@@ -26,7 +26,7 @@ public class OrderStatusManager {
 
         String sql = "update shortterm_ordermgt \n" +
                 "set shord_actst = '00002' \n" +
-                "where shord_id > 1 and shord_actst = '00001' and shord_dtactst <> '' and shord_dtactst is not null and shord_dtactst < curdate()";
+                "where shord_id > 0 and shord_actst = '00001' and shord_dtactst <> '' and shord_dtactst is not null and shord_dtactst < curdate()";
         helper.executeUpdate(sql);
 
         helper.closeConnection();
@@ -41,7 +41,7 @@ public class OrderStatusManager {
 
         String sql = "update longterm_ordermgt \n" +
                 "set lgord_actst = '00002' \n" +
-                "where lgord_id > 1 and lgord_actst = '00001' and lgord_dtactst <> '' and lgord_dtactst is not null and lgord_dtactst < curdate()";
+                "where lgord_id > 0 and lgord_actst = '00001' and lgord_dtactst <> '' and lgord_dtactst is not null and lgord_dtactst < curdate()";
         helper.executeUpdate(sql);
 
         helper.closeConnection();
