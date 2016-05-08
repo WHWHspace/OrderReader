@@ -10,3 +10,10 @@ logs
 .project
 bin
 # Created by .ignore support plugin (hsz.mobi)
+
+
+# Eclipse project files
+.classpath
+.project
+bin
+# Created by .ignore support plugin (hsz.mobi)
