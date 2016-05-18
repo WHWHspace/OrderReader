@@ -37,12 +37,12 @@ public class ReadOrderThread extends Thread{
     public void run() {
         while (!exit){
             Date currentDate = new Date();          //现在的时间
-            writeLastReadTime(currentDate);
             logger.info(currentDate);
             //读取上一次时间到现在这段时间内新增的医嘱
             reader.readNewAddedLongTermOrderByIDs(lastDate,currentDate);
             reader.readNewAddedShortTermOrderByIDs(lastDate,currentDate);
-
+            //读取完成之后，写入上一次读取时间
+            writeLastReadTime(currentDate);
             lastDate = currentDate;                     //更新上一次读取的时间
             try {
                 Thread.sleep(interval);
