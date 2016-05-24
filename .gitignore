@@ -13,4 +13,5 @@ logs
 .classpath
 .project
 bin
+.setting
 # Created by .ignore support plugin (hsz.mobi)
