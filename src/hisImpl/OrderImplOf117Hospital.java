@@ -24,17 +24,17 @@ import java.util.Date;
 public class OrderImplOf117Hospital implements OrderInterface{
     private Logger logger = Main.logger;
 
-    private static final String LongTermOrderViewName = "LONGTERM_ORDER";
-    private static final String ShortTermOrderViewName = "SHORTTERM_ORDER";
-    private static final String url = "jdbc:oracle:thin:@132.147.160.7:1521:orcl";
-    private static final String user = "lab";
-    private static final String password = "lab117";
+//    private static final String LongTermOrderViewName = "LONGTERM_ORDER";
+//    private static final String ShortTermOrderViewName = "SHORTTERM_ORDER";
+//    private static final String url = "jdbc:oracle:thin:@132.147.160.7:1521:orcl";
+//    private static final String user = "lab";
+//    private static final String password = "lab117";
 
-//    private static final String LongTermOrderViewName = "longterm_order";
-//    private static final String ShortTermOrderViewName = "shortterm_order";
-//    private static final String url = "jdbc:oracle:thin:@127.0.0.1:1521:orcl";
-//    private static final String user = "test";
-//    private static final String password = "123456";
+    private static final String LongTermOrderViewName = "longterm_order";
+    private static final String ShortTermOrderViewName = "shortterm_order";
+    private static final String url = "jdbc:oracle:thin:@127.0.0.1:1521:orcl";
+    private static final String user = "test";
+    private static final String password = "123456";
 
     private OracleHelper helper;
 
@@ -98,12 +98,6 @@ public class OrderImplOf117Hospital implements OrderInterface{
                     if (rs.getString("stop_date_time") != null){
                         Date stopDate = readFormat.parse(rs.getString("stop_date_time"));
                         o.setLgord_dtactst(dateFormat.format(stopDate));
-                        if((stopDate.after(new Date()))||dateFormat.format(stopDate).equals(dateFormat.format(new Date()))){
-                            o.setLgord_actst(OrderStatus.USE);
-                        }
-                        else{
-                            o.setLgord_actst(OrderStatus.NOTUSE);
-                        }
                     }
                     else {
                         o.setLgord_dtactst("");

@@ -17,12 +17,12 @@ import java.util.Date;
  */
 public class OrderReader {
 
-//        public static String url="jdbc:mysql://132.147.173.112:3306/myhaisv4?useUnicode=true&characterEncoding=UTF-8";
-//    public static String user = "root";
-//    public static String password = "";
     public static String url="jdbc:mysql://127.0.0.1:3306/myhaisv4?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
     public static String user = "root";
-    public static String password = "";
+    public static String password = "123456";
+//    public static String url="jdbc:mysql://127.0.0.1:3306/myhaisv4?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true";
+//    public static String user = "root";
+//    public static String password = "";
 
     private Logger logger = Main.logger;
     MysqlHelper mysqlHelper;
