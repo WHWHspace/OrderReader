@@ -2,22 +2,22 @@ package model;
 
 /**
  * Created by 31344 on 2016/2/24.
- * ï¿½ï¿½ï¿½ï¿½Ò½ï¿½ï¿½
+ * ³¤ÆÚÒ½Öö
  */
 public class LongTermOrder {
     private int lgord_id;           //id
-    private String lgord_patic;     //ï¿½ï¿½ï¿½Ë±ï¿½ï¿½
-    private String lgord_dateord;   //ï¿½ï¿½ï¿½ï¿½
-    private String lgord_timeord;   //Ê±ï¿½ï¿½
-    private String lgord_usr1;      //ï¿½ï¿½ï¿½ï¿½Ò½ï¿½ï¿½
-    private String lgord_drug;      //Ò©Æ·ï¿½ï¿½ï¿½
-    private String lgord_actst;     //ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½
-    private String lgord_dtactst;   //Í£ï¿½ï¿½Ê±ï¿½ï¿½
-    private String lgord_usr2;      //ï¿½ï¿½Â¼ï¿½ï¿½
-    private String lgord_comment;   //ï¿½ï¿½×¢
-    private String lgord_intake;    //ï¿½ï¿½ï¿½ï¿½
-    private String lgord_freq;      //Æµï¿½ï¿½
-    private String lgord_medway;    //ï¿½ï¿½Ò©ï¿½ï¿½Ê½
+    private String lgord_patic;     //²¡ÈË±àºÅ
+    private String lgord_dateord;   //ÈÕÆÚ
+    private String lgord_timeord;   //Ê±¼ä
+    private String lgord_usr1;      //¾­ÖÎÒ½Éú
+    private String lgord_drug;      //Ò©Æ·Ãû³Æ
+    private String lgord_actst;     //ÊÇ·ñÆôÓÃ
+    private String lgord_dtactst;   //Í£ÓÃÊ±¼ä
+    private String lgord_usr2;      //¼ÇÂ¼ÈË
+    private String lgord_comment;   //±¸×¢
+    private String lgord_intake;    //¼ÁÁ¿
+    private String lgord_freq;      //ÆµÂÊ
+    private String lgord_medway;    //¸øÒ©·½Ê½
 
     public int getLgord_id() {
         return lgord_id;

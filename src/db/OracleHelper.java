@@ -1,10 +1,7 @@
 package db;
 
-import launcher.Main;
-import org.apache.log4j.Logger;
-
-import java.sql.*;
-import java.util.*;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Date;
 
 /**
@@ -26,9 +23,9 @@ public class OracleHelper extends DBHelper{
             try {
                 //动态加载oracle驱动
                 Class.forName("oracle.jdbc.driver.OracleDriver");
-
                 //建立连接
                 connection = DriverManager.getConnection(url, user, password);
+                
             } catch (ClassNotFoundException e) {
                 logger.error(new Date() + " 加载oracle驱动失败\n" + e);
             } catch (SQLException e) {

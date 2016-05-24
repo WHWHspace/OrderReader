@@ -13,7 +13,7 @@ public class ShortTermOrder {
     private String shord_drug;      //药品名称
     private String shord_actst;     //是否启用
     private String shord_dtactst;   //停用时间
-    private String shord_usr2;      //记录人
+    private String shord_usr2;      //记录�?
     private String shord_comment;   //备注
     private String shord_intake;    //剂量
     private String shord_freq;      //频率

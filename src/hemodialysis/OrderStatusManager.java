@@ -1,7 +1,6 @@
 package hemodialysis;
 
 import db.MysqlHelper;
-import launcher.Main;
 
 /**
  * Created by 31344 on 2016/3/31.
