@@ -78,7 +78,7 @@ public class OrderReader {
     }
 
     /**
-     * 读取所有血透病人在his系统中的id
+     * 读取所有血透病人在his系统中的id,去除 null 和 ""
      * id在输入病人基本信息的时候获取，保存在pif_insid
      * @return
      */
@@ -92,7 +92,7 @@ public class OrderReader {
         try {
             while(rs.next()){
                 String hisID = rs.getString("pif_insid");
-                if(hisID != null){
+                if((hisID != null) &&!("".equals(hisID))){
                     ids.add(hisID);
                 }
             }
