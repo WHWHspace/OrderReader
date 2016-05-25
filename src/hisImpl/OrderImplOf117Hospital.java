@@ -24,17 +24,17 @@ import java.util.Date;
 public class OrderImplOf117Hospital implements OrderInterface{
     private Logger logger = Main.logger;
 
-//    private static final String LongTermOrderViewName = "LONGTERM_ORDER";
-//    private static final String ShortTermOrderViewName = "SHORTTERM_ORDER";
-//    private static final String url = "jdbc:oracle:thin:@132.147.160.7:1521:orcl";
-//    private static final String user = "lab";
-//    private static final String password = "lab117";
+    private static final String LongTermOrderViewName = "LONGTERM_ORDER";
+    private static final String ShortTermOrderViewName = "SHORTTERM_ORDER";
+    private static final String url = "jdbc:oracle:thin:@132.147.160.7:1521:orcl";
+    private static final String user = "lab";
+    private static final String password = "lab117";
 
-    private static final String LongTermOrderViewName = "longterm_order";
-    private static final String ShortTermOrderViewName = "shortterm_order";
-    private static final String url = "jdbc:oracle:thin:@127.0.0.1:1521:orcl";
-    private static final String user = "test";
-    private static final String password = "123456";
+//    private static final String LongTermOrderViewName = "long_order";
+//    private static final String ShortTermOrderViewName = "short_order";
+//    private static final String url = "jdbc:oracle:thin:@127.0.0.1:1521:orcl";
+//    private static final String user = "test";
+//    private static final String password = "123456";
 
     private OracleHelper helper;
 
@@ -66,7 +66,6 @@ public class OrderImplOf117Hospital implements OrderInterface{
                     continue;
                 }
                 o.setLgord_patic(ic);
-                System.out.println(ic);
                 SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                 SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
@@ -74,12 +73,12 @@ public class OrderImplOf117Hospital implements OrderInterface{
                     Date date;
                     if(rs.getString("start_date_time") != null){
                         date = readFormat.parse(rs.getString("start_date_time"));
+                        o.setLgord_dateord(dateFormat.format(date));
+                        o.setLgord_timeord(timeFormat.format(date));
                     }
                     else {
-                        date = new Date();
+                        continue;
                     }
-                    o.setLgord_dateord(dateFormat.format(date));
-                    o.setLgord_timeord(timeFormat.format(date));
                 } catch (ParseException e) {
                     logger.error(new Date() + " 解析开始日期错误\n" + e);
                     e.printStackTrace();
@@ -192,7 +191,6 @@ public class OrderImplOf117Hospital implements OrderInterface{
                     continue;
                 }
                 o.setShord_patic(ic);
-                System.out.println(ic);
                 SimpleDateFormat readFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                 SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
