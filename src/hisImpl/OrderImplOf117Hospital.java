@@ -59,6 +59,12 @@ public class OrderImplOf117Hospital implements OrderInterface{
         mysqlHelper.getConnection();
         try {
             while(rs.next()){
+                //当备注为‘血透’，‘血透用’，‘xt’时才读取
+                String comment = rs.getString("lgord_comment");
+                if(!(("血透".equals(comment))||("血透用".equals(comment))||("xt".equals(comment)))){
+                    continue;
+                }
+
                 LongTermOrder o = new LongTermOrder();
                 String patientID = rs.getString("lgord_patic");
                 String ic = getPatientIC(patientID);
@@ -134,7 +140,22 @@ public class OrderImplOf117Hospital implements OrderInterface{
         else{
             String sql = "select drg_code from drug_list where drg_name = '" + drugName +"'";
             ResultSet rs = mysqlHelper.executeQuery(sql);
+            //没有药品
             if(rs == null){
+                String countSql = "select count(*) as total from drug_list";
+                ResultSet countRs = mysqlHelper.executeQuery(sql);
+                int total = 0;
+                try {
+                    if(countRs.next()){
+                        total = Integer.parseInt(countRs.getString("total"));
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    return id;
+                }
+
+                String addsql = "insert into drug_list ";
+                mysqlHelper.executeUpdate(addsql);
                 return id;
             }
             try {
