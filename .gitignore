@@ -6,6 +6,8 @@
 *.iml
 out
 logs
+lib
+target
 # Created by .ignore support plugin (hsz.mobi)
 
 
