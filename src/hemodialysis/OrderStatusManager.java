@@ -22,7 +22,7 @@ public class OrderStatusManager {
 
         String sql = "update shortterm_ordermgt \n" +
                 "set shord_actst = '00002' \n" +
-                "where shord_id > 1 and shord_actst = '00001' and shord_dtactst <> '' and shord_dtactst is not null and shord_dtactst < curdate()";
+                "where shord_id > 1 and shord_actst = '00001' and shord_dtactst <> '' and shord_dtactst is not null and shord_dtactst < date_sub(now(),interval 1 week)";
         helper.executeUpdate(sql);
 
         helper.closeConnection();
